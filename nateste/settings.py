@@ -24,7 +24,7 @@ SECRET_KEY = 't3-4=+u(#%%@5d=%!vbcm!)48rdk*5ruh&5oku4-fm6&kxvgh&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["thawing-reef-32246.herokuapp.com"]
 
 # Application definition
 
