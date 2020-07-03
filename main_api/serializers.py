@@ -19,6 +19,12 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', "deadline", 'description', 'is_active', 'weight', 'price', 'created_at', 'updated_at',
                   'customer', 'worker']
 
+class NewOrderSerializer(serializers.Serializer):
+    id = serializers.CharField(max_length=110)
+    title = serializers.CharField(max_length=110)
+    description = serializers.CharField(max_length=110)
+
+
 
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
