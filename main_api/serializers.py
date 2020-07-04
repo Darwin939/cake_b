@@ -1,4 +1,4 @@
-from .models import Review, Order
+from .models import Review, Order , Profile
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
+
         fields = ['id', 'username',  # 'profile.created_at', 'profile.updated_at',
                   'first_name', 'last_name',  # 'profile.is_cooker', 'profile.bio', 'profile.rating',
                   'email']
@@ -13,16 +14,19 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 
+
+
+
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
+        created = serializers.IntegerField(source='created_at')
+
+        depth = 1
         model = Order
         fields = ['id', 'title', "deadline", 'description', 'is_active', 'weight', 'price', 'created_at', 'updated_at',
                   'customer', 'worker']
 
-class NewOrderSerializer(serializers.Serializer):
-    id = serializers.CharField(max_length=110)
-    title = serializers.CharField(max_length=110)
-    description = serializers.CharField(max_length=110)
+
 
 
 
