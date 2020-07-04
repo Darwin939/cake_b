@@ -1,3 +1,5 @@
+from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
 
 from .models import Order, User ,Profile
 from .serializers import OrderSerializer, UserSerializer, TodoSerializer
@@ -18,9 +20,20 @@ class CreateUser(generics.ListCreateAPIView):
     serializer_class = UserSerializer
 
 
-class UserProfile(generics.RetrieveUpdateAPIView):
+class UserProfile(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+class MyProfile(generics.RetrieveUpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, id=1)
+        return obj
+
+
 
 class UserTodos(generics.ListAPIView):
     queryset = Order.objects.all()
