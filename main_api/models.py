@@ -39,9 +39,9 @@ class Order(models.Model):
     is_active = models.BooleanField(default=True)
     weight = models.FloatField()
     price = models.IntegerField()
-    customer = models.ForeignKey(User, on_delete=models.CASCADE,
+    customer = models.ForeignKey(Profile, on_delete=models.CASCADE,
                                  related_name='customer_order')
-    worker = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True,
+    worker = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True,
                                related_name='worker_order')
 
     def __str__(self):

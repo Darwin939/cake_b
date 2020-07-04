@@ -1,5 +1,5 @@
 
-from .models import Order, User
+from .models import Order, User ,Profile
 from .serializers import OrderSerializer, UserSerializer
 from rest_framework import generics
 
@@ -9,8 +9,8 @@ class OrderList(generics.ListCreateAPIView):
     serializer_class = OrderSerializer
 
 
-class CreateUser(generics.CreateAPIView):
-    queryset = User.objects.all()
+class CreateUser(generics.ListCreateAPIView):
+    queryset = Profile.objects.all()
     serializer_class = UserSerializer
 
 
