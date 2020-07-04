@@ -3,23 +3,30 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 
 
-class UserSerializer(serializers.ModelSerializer):
-    # user = serializers.PrimaryKeyRelatedField(queryset=Profile.objects.all())
+class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
-
         model = Profile
-        depth = 1
-        fields = ["user",'bio','location','is_cooker',"birth_date","rating"]
+        fields = ["bio", 'location', 'birth_date', 'rating']
+
+
+class UserSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer()
+    class Meta:
+        model = User
+        depth = 0
+        fields = ['id', 'username', 'profile','first_name',"last_name",'email','is_active','date_joined']
 
 
 class OrderSerializer(serializers.ModelSerializer):
-
+    customer = UserSerializer(read_only=True)
+    worker = UserSerializer(read_only=True)
     class Meta:
         depth = 2
         model = Order
         fields = ['id', 'title', "deadline", 'description', 'is_active', 'weight', 'price', 'created_at', 'updated_at',
-                  'customer', 'worker']
+                  'worker', "customer"]
+
 
 
 class ReviewSerializer(serializers.ModelSerializer):

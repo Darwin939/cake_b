@@ -5,7 +5,7 @@ from django.dispatch import receiver
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE,related_name="profile")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_cooker = models.BooleanField(default=False)
@@ -16,7 +16,7 @@ class Profile(models.Model):
     rating = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.user
+        return self.bio
 
 
 @receiver(post_save, sender=User)
@@ -39,10 +39,10 @@ class Order(models.Model):
     is_active = models.BooleanField(default=True)
     weight = models.FloatField()
     price = models.IntegerField()
-    customer = models.ForeignKey(Profile, on_delete=models.CASCADE,
-                                 related_name='customer_order')
-    worker = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True,
-                               related_name='worker_order')
+    customer = models.ForeignKey("auth.User", on_delete=models.CASCADE,
+                                 related_name='customer_orders')
+    worker = models.ForeignKey("auth.User", on_delete=models.CASCADE, null=True, blank=True,
+                               related_name='worker_orders')
 
     def __str__(self):
         return self.title

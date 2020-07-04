@@ -10,7 +10,7 @@ class OrderList(generics.ListCreateAPIView):
 
 
 class CreateUser(generics.ListCreateAPIView):
-    queryset = Profile.objects.all()
+    queryset = User.objects.all()
     serializer_class = UserSerializer
 
 
