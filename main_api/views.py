@@ -6,7 +6,7 @@ from rest_framework import generics
 
 
 class OrderList(generics.ListCreateAPIView):
-    queryset = Order.objects.all()
+    queryset = Order.objects.order_by('-created_at')
     serializer_class = OrderSerializer
 
     def perform_create(self, serializer):
@@ -20,6 +20,7 @@ class CreateUser(generics.ListCreateAPIView):
 
 
 class UserProfile(generics.RetrieveAPIView):
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
 

@@ -11,10 +11,13 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer()
+    url = serializers.HyperlinkedIdentityField(
+        view_name='api:user'
+    )
     class Meta:
         model = User
         depth = 0
-        fields = ['id', 'username', 'profile','first_name',"last_name",'email','is_active']
+        fields = ['id', 'username', 'profile','first_name',"last_name",'email','is_active','url']
 
     def update(self, instance, validated_data):
         profile_data = validated_data.pop('profile')
@@ -50,11 +53,13 @@ class OrderSerializer(serializers.ModelSerializer):
     worker = UserSerializer(read_only=True)
 
     class Meta:
+
         depth = 2
         model = Order
         fields = ['id', 'title', "deadline", 'description', 'is_active', 'weight', 'price', 'created_at', 'updated_at',
                   'worker', "customer"]
         read_only_fields = ["is_active"]
+
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -70,8 +75,8 @@ class TodoSerializer(serializers.ModelSerializer):
     )
     class Meta:
         model = Order
-        fields = ['id', 'title', "deadline", 'description', 'is_active',"customer","url"]
-        read_only_fields = ['id', 'title', "deadline", 'description']
+        fields = ['id', 'title',"url", "deadline", 'description', 'is_active',"customer"]
+        read_only_fields = ['id', 'title', "deadline", 'description','url']
 
 # from main_api.serializers import OrderSerializer
 # ser = OrderSerializer()
