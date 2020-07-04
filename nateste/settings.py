@@ -36,6 +36,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+'whitenoise.middleware.WhiteNoiseMiddleware',
 
 ]
 
@@ -133,3 +134,4 @@ CORS_ORIGIN_REGEX_WHITELIST = [
 #declare static files for browsarable-api in restframework
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
