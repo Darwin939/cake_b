@@ -118,7 +118,7 @@ STATIC_URL = '/static/'
 
 
 
-#l
+#lines to enable cors anywhere
 CORS_ORIGIN_ALLOW_ALL = True # If this is used then `CORS_ORIGIN_WHITELIST` will not have any effect
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = [
@@ -131,3 +131,7 @@ CORS_ORIGIN_REGEX_WHITELIST = [
     'https://thawing-reef-32246.herokuapp.com/api/order/',
     "http://localhost:5000"
 ]
+
+#declare static files for browsarable-api in restframework
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
