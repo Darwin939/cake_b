@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Profile
         fields = ["bio", 'location', 'birth_date', 'rating']
@@ -15,7 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         depth = 0
-        fields = ['id', 'username', 'profile','first_name',"last_name",'email','is_active','date_joined']
+        fields = ['id', 'username', 'profile','first_name',"last_name",'email','is_active']
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -35,6 +34,13 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Review
         fields = ['id', 'title', 'description', 'updated_at',
                   'created_at', 'rating', 'customer', 'worker']
+
+class TodoSerializer(serializers.ModelSerializer):
+    customer = UserSerializer(read_only=True)
+    class Meta:
+        model = Order
+        fields = ['id', 'title', "deadline", 'description', 'is_active',"customer"]
+        read_only_fields = ['id', 'title', "deadline", 'description']
 
 # from main_api.serializers import OrderSerializer
 # ser = OrderSerializer()

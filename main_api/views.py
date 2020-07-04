@@ -1,6 +1,6 @@
 
 from .models import Order, User ,Profile
-from .serializers import OrderSerializer, UserSerializer
+from .serializers import OrderSerializer, UserSerializer, TodoSerializer
 from rest_framework import generics
 
 
@@ -21,3 +21,11 @@ class CreateUser(generics.ListCreateAPIView):
 class UserProfile(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+class UserTodos(generics.ListAPIView):
+    queryset = Order.objects.all()
+    serializer_class = TodoSerializer
+
+class UserTodo(generics.RetrieveUpdateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = TodoSerializer
