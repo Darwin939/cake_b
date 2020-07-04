@@ -21,12 +21,13 @@ class UserSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     customer = UserSerializer(read_only=True)
     worker = UserSerializer(read_only=True)
+
     class Meta:
         depth = 2
         model = Order
         fields = ['id', 'title', "deadline", 'description', 'is_active', 'weight', 'price', 'created_at', 'updated_at',
                   'worker', "customer"]
-
+        read_only_fields = ["is_active"]
 
 
 class ReviewSerializer(serializers.ModelSerializer):
