@@ -13,9 +13,11 @@ class OrderList(generics.ListCreateAPIView):
         serializer.save(customer=user)
 
 
-
 class CreateUser(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 
+class UserProfile(generics.RetrieveUpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
