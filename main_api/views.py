@@ -30,7 +30,7 @@ class MyProfile(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         queryset = self.get_queryset()
-        obj = get_object_or_404(queryset, id=1),
+        obj = get_object_or_404(queryset, id=1)
         return obj
 
 
