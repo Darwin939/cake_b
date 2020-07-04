@@ -16,6 +16,34 @@ class UserSerializer(serializers.ModelSerializer):
         depth = 0
         fields = ['id', 'username', 'profile','first_name',"last_name",'email','is_active']
 
+    def update(self, instance, validated_data):
+        profile_data = validated_data.pop('profile')
+        profile = instance.profile
+        instance.username = validated_data.get('username', instance.username)
+        instance.email = validated_data.get('email', instance.email)
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.is_active = validated_data.get('is_active', instance.is_active)
+        profile.bio = profile_data.get(
+            'bio',
+            profile.bio
+        )
+        profile.location = profile_data.get(
+            'location',
+            profile.location
+        )
+        profile.birth_date = profile_data.get(
+            'birth_date',
+            profile.birth_date
+        )
+        profile.rating = profile_data.get(
+            'rating',
+            profile.rating
+        )
+        profile.save()
+
+        return instance
+
 
 class OrderSerializer(serializers.ModelSerializer):
     customer = UserSerializer(read_only=True)
