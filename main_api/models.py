@@ -14,6 +14,7 @@ class Profile(models.Model):
     birth_date = models.DateField(null=True, blank=True)
     # TODO add avatar
     rating = models.IntegerField(default=0)
+    #social links
 
     def __str__(self):
         return self.bio

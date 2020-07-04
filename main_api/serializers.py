@@ -1,7 +1,7 @@
 from .models import Review, Order, Profile
 from rest_framework import serializers
 from django.contrib.auth.models import User
-
+from rest_framework.reverse import  reverse
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -65,9 +65,12 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class TodoSerializer(serializers.ModelSerializer):
     customer = UserSerializer(read_only=True)
+    url =  serializers.HyperlinkedIdentityField(
+        view_name='api:todo'
+    )
     class Meta:
         model = Order
-        fields = ['id', 'title', "deadline", 'description', 'is_active',"customer"]
+        fields = ['id', 'title', "deadline", 'description', 'is_active',"customer","url"]
         read_only_fields = ['id', 'title', "deadline", 'description']
 
 # from main_api.serializers import OrderSerializer

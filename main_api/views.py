@@ -1,5 +1,4 @@
 from rest_framework.generics import get_object_or_404
-from rest_framework.response import Response
 
 from .models import Order, User ,Profile
 from .serializers import OrderSerializer, UserSerializer, TodoSerializer
@@ -30,7 +29,7 @@ class MyProfile(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         queryset = self.get_queryset()
-        obj = get_object_or_404(queryset, id=1)
+        obj = get_object_or_404(queryset, id=1),
         return obj
 
 
@@ -38,6 +37,8 @@ class MyProfile(generics.RetrieveUpdateAPIView):
 class UserTodos(generics.ListAPIView):
     queryset = Order.objects.all()
     serializer_class = TodoSerializer
+
+
 
 class UserTodo(generics.RetrieveUpdateAPIView):
     queryset = Order.objects.all()
