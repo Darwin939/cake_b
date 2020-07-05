@@ -64,10 +64,13 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    customer = UserSerializer(read_only=True)
     class Meta:
         model = Review
+
         fields = ['id', 'title', 'description', 'updated_at',
-                  'created_at', 'rating', 'customer', 'worker']
+                  'created_at', 'rating', 'customer']
+        read_only_fields = ["customer"]
 
 class TodoSerializer(serializers.ModelSerializer):
     customer = UserSerializer(read_only=True)
@@ -79,6 +82,3 @@ class TodoSerializer(serializers.ModelSerializer):
         fields = ['id', 'title',"url", "deadline", 'description', 'is_active',"customer"]
         read_only_fields = ['id', 'title', "deadline", 'description','url']
 
-# from main_api.serializers import OrderSerializer
-# ser = OrderSerializer()
-# print (ser)

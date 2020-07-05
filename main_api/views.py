@@ -1,7 +1,7 @@
 from rest_framework.generics import get_object_or_404
 
-from .models import Order, User ,Profile
-from .serializers import OrderSerializer, UserSerializer, TodoSerializer
+from .models import Order, User ,Review
+from .serializers import OrderSerializer, UserSerializer, TodoSerializer, ReviewSerializer
 from rest_framework import generics
 
 
@@ -44,3 +44,11 @@ class UserTodos(generics.ListAPIView):
 class UserTodo(generics.RetrieveUpdateAPIView):
     queryset = Order.objects.all()
     serializer_class = TodoSerializer
+
+class UserReview(generics.ListCreateAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    def perform_create(self, serializer):
+        user = User.objects.get(pk=1)   # TODO in production set to self.request.user
+        worker = User.objects.get(pk=2)
+        serializer.save(customer=user,worker=worker)
