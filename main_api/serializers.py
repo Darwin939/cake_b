@@ -6,7 +6,7 @@ from rest_framework.reverse import  reverse
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ["bio", 'location', 'birth_date', 'rating']
+        fields = ["bio", 'location', 'birth_date']
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -40,10 +40,10 @@ class UserSerializer(serializers.ModelSerializer):
             'birth_date',
             profile.birth_date
         )
-        profile.rating = profile_data.get(
-            'rating',
-            profile.rating
-        )
+        # profile.rating = profile_data.get(
+        #     'rating',
+        #     profile.rating
+        # )
         profile.save()
 
         return instance
@@ -81,4 +81,9 @@ class TodoSerializer(serializers.ModelSerializer):
         model = Order
         fields = ['id', 'title',"url", "deadline", 'description', 'is_active',"customer"]
         read_only_fields = ['id', 'title', "deadline", 'description','url']
+
+class RatingSerializer(serializers.Serializer):
+    counts = serializers.JSONField()
+    average = serializers.IntegerField()
+    quantity = serializers.IntegerField()
 
