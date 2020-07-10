@@ -66,27 +66,27 @@ class Rating(APIView):
     def get(self, request):
 
         queryset = Review.objects.filter(worker_id=2)
-        counts = [{"number":'1','value':0},
-                  {"number":'2','value':0},
-                  {"number":'3','value':0},
+        counts = [{"number":'5','value':0},
                   {"number":'4','value':0},
-                  {"number":'5','value':0}]
+                  {"number":'3','value':0},
+                  {"number":'2','value':0},
+                  {"number":'1','value':0}]
         quantity = 0
 
         for query in queryset:
             if query.rating == 1:
-                counts[0]['value'] += 1
+                counts[4]['value'] += 1
             elif query.rating == 2:
-                counts[1]['value'] += 1
+                counts[3]['value'] += 1
             elif query.rating == 3:
                 counts[2]['value'] += 1
             elif query.rating == 4:
-                counts[3]['value'] += 1
+                counts[1]['value'] += 1
             elif query.rating == 5:
-                counts[4]['value'] += 1
+                counts[0]['value'] += 1
             quantity += 1
         print (counts)
-        average = (5 * counts[4]['value'] + 4 * counts[3]['value'] + 3 * counts[2]['value'] + 2 * counts[1]["value"] + counts[0]['value']) / quantity
+        average = (5 * counts[0]['value'] + 4 * counts[1]['value'] + 3 * counts[2]['value'] + 2 * counts[3]["value"] + counts[4]['value']) / quantity
         data = {'counts': counts, 'quantity': quantity, 'average': average}
         serializer = RatingSerializer(data)
         data = serializer.data
