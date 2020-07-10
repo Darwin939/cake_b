@@ -7,7 +7,7 @@ from rest_framework.reverse import reverse
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ["bio", 'location', 'birth_date','instagram','whatsapp','telegram']
+        fields = ["bio", 'location', 'birth_date','instagram']
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -46,14 +46,7 @@ class UserSerializer(serializers.ModelSerializer):
             'instagram',
             profile.instagram
         )
-        profile.whatsapp = profile_data.get(
-            'whatsapp',
-            profile.whatsapp
-        )
-        profile.telegram = profile_data.get(
-            'telegram',
-            profile.telegram
-        )
+
         profile.save()
 
         return instance
