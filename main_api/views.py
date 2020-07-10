@@ -1,10 +1,11 @@
 from rest_framework.generics import get_object_or_404
+from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Order, User, Review
-from .serializers import OrderSerializer, UserSerializer, TodoSerializer, ReviewSerializer, RatingSerializer
-from rest_framework import generics
+from .serializers import OrderSerializer, UserSerializer, TodoSerializer, ReviewSerializer, RatingSerializer , FileSerializer
+from rest_framework import generics, status
 from .filters import OrderFilter
 
 
@@ -65,28 +66,41 @@ class Rating(APIView):
     def get(self, request):
 
         queryset = Review.objects.filter(worker_id=2)
-        counts = {'1': 0,
-                  '2': 0,
-                  '3': 0,
-                  '4': 0,
-                  '5': 0}
+        counts = [{"number":'1','value':0},
+                  {"number":'2','value':0},
+                  {"number":'3','value':0},
+                  {"number":'4','value':0},
+                  {"number":'5','value':0}]
         quantity = 0
 
         for query in queryset:
             if query.rating == 1:
-                counts['1'] += 1
+                counts[0]['value'] += 1
             elif query.rating == 2:
-                counts['2'] += 1
+                counts[1]['value'] += 1
             elif query.rating == 3:
-                counts['3'] += 1
+                counts[2]['value'] += 1
             elif query.rating == 4:
-                counts['4'] += 1
+                counts[3]['value'] += 1
             elif query.rating == 5:
-                counts['5'] += 1
+                counts[4]['value'] += 1
             quantity += 1
-
-        average = (5 * counts['5'] + 4 * counts['4'] + 3 * counts['3'] + 2 * counts["2"] + counts['1']) / quantity
+        print (counts)
+        average = (5 * counts[4]['value'] + 4 * counts[3]['value'] + 3 * counts[2]['value'] + 2 * counts[1]["value"] + counts[0]['value']) / quantity
         data = {'counts': counts, 'quantity': quantity, 'average': average}
         serializer = RatingSerializer(data)
         data = serializer.data
         return Response(data)
+
+class FileUpload(APIView):
+    parser_class = (FileUploadParser,)
+
+    def post(self, request, *args, **kwargs):
+
+        file_serializer = FileSerializer(data=request.data)
+
+        if file_serializer.is_valid():
+            file_serializer.save()
+            return Response(file_serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

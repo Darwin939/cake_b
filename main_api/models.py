@@ -12,10 +12,12 @@ class Profile(models.Model):
     bio = models.TextField(max_length=500, blank=True)
     location = models.CharField(max_length=50, blank=True)
     birth_date = models.DateField(null=True, blank=True)
+    instagram = models.CharField(max_length=100,blank=True)
+    whatsapp = models.CharField(max_length=100,blank=True)
+    telegram = models.CharField(max_length=100,blank=True)
     # TODO add avatar
     rating = models.IntegerField(default=0)
-    #social links
-
+    file = models.FileField(blank=True, null=True)
     def __str__(self):
         return self.bio
 
@@ -62,10 +64,3 @@ class Review(models.Model):
 
     def __str__(self):
         return self.title
-
-
-
-#TODO make order , find order {query string},
-
-#graphql
-

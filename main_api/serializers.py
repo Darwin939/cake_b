@@ -1,7 +1,8 @@
 from .models import Review, Order, Profile
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from rest_framework.reverse import  reverse
+from rest_framework.reverse import reverse
+
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,10 +15,11 @@ class UserSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(
         view_name='api:user'
     )
+
     class Meta:
         model = User
         depth = 0
-        fields = ['id', 'username', 'profile','first_name',"last_name",'email','is_active','url']
+        fields = ['id', 'username', 'profile', 'first_name', "last_name", 'email', 'is_active', 'url']
 
     def update(self, instance, validated_data):
         profile_data = validated_data.pop('profile')
@@ -54,7 +56,6 @@ class OrderSerializer(serializers.ModelSerializer):
     worker = UserSerializer(read_only=True)
 
     class Meta:
-
         depth = 2
         model = Order
         fields = ['id', 'title', "deadline", 'description', 'is_active', 'weight', 'price', 'created_at', 'updated_at',
@@ -62,9 +63,9 @@ class OrderSerializer(serializers.ModelSerializer):
         read_only_fields = ["is_active"]
 
 
-
 class ReviewSerializer(serializers.ModelSerializer):
     customer = UserSerializer(read_only=True)
+
     class Meta:
         model = Review
 
@@ -72,18 +73,34 @@ class ReviewSerializer(serializers.ModelSerializer):
                   'created_at', 'rating', 'customer']
         read_only_fields = ["customer"]
 
+
 class TodoSerializer(serializers.ModelSerializer):
     customer = UserSerializer(read_only=True)
-    url =  serializers.HyperlinkedIdentityField(
+    url = serializers.HyperlinkedIdentityField(
         view_name='api:todo'
     )
+
     class Meta:
         model = Order
-        fields = ['id', 'title',"url", "deadline", 'description', 'is_active',"customer"]
-        read_only_fields = ['id', 'title', "deadline", 'description','url']
+        fields = ['id', 'title', "url", "deadline", 'description', 'is_active', "customer"]
+        read_only_fields = ['id', 'title', "deadline", 'description', 'url']
+
 
 class RatingSerializer(serializers.Serializer):
     counts = serializers.JSONField()
     average = serializers.IntegerField()
     quantity = serializers.IntegerField()
 
+
+class FileSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Profile
+        fields = ['file']
+
+    def create(self, validated_data):
+        profile = Profile.objects.get(user='1')
+        print(validated_data)
+        profile.file = 'validated_data'
+        profile.save()
+        return profile
