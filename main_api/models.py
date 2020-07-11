@@ -65,8 +65,8 @@ class Review(models.Model):
     def __str__(self):
         return self.title
 
-class Avatar(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
-    file = models.FileField(blank=False, null=False)
-    def __str__(self):
-        return self.file.name
+# class Avatar(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile")
+#     file = models.FileField(blank=False, null=False)
+#     def __str__(self):
+#         return self.file.name
