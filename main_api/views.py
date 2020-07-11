@@ -40,7 +40,7 @@ class MyProfile(generics.RetrieveUpdateAPIView):
     def get(self, request, *args, **kwargs):
         user = User.objects.get(id = 1)
         serializer = MyProfileSerializer(data={'id':user.id,"username":user.username,
-                                               'bio':user.profile.bio,'fisrt_name':user.first_name,
+                                               'bio':user.profile.bio,'first_name':user.first_name,
                                                "last_name":user.last_name,'instagram':user.profile.instagram,
                                                'is_active':user.is_active,"location":user.profile.location,
                                                'email':user.email,'birth_date':user.profile.birth_date})
