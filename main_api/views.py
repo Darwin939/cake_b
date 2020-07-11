@@ -128,8 +128,11 @@ class FileUpload(APIView):
     def post(self, request, *args, **kwargs):
         user = User.objects.get(id=1)
         avatar = Avatar.objects.filter(user=1)
-        if avatar[0].file:
+
+        try:
             avatar[0].delete()
+        except:
+            pass
         data = request.data.update({"user":user.id})
         file_serializer = FileSerializer(data=request.data)
 
