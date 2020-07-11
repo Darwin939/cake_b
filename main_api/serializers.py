@@ -10,8 +10,25 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ["bio", 'location', 'birth_date','instagram']
 
 
+class MyProfileSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    username = serializers.CharField()
+    bio = serializers.CharField()
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    instagram = serializers.CharField()
+    is_active = serializers.BooleanField()
+    email = serializers.CharField()
+    birth_date = serializers.DateField()
+    location = serializers.DateField()
+
 class UserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer()
+    bio = serializers.SerializerMethodField('get_bio')
+    def get_bio(self,foo):
+        bio = ProfileSerializer().fields['bio']
+        return bio
+
     url = serializers.HyperlinkedIdentityField(
         view_name='api:user'
     )
@@ -19,7 +36,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         depth = 0
-        fields = ['id', 'username', 'profile', 'first_name', "last_name", 'email', 'is_active', 'url']
+        fields = ['id', 'bio','username','profile', 'first_name', "last_name", 'email', 'is_active', 'url']
 
     def update(self, instance, validated_data):
         profile_data = validated_data.pop('profile')

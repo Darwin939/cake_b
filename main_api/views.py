@@ -3,8 +3,9 @@ from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Order, User, Review
+from .models import Order, User, Review ,Profile
 from .serializers import OrderSerializer, UserSerializer, TodoSerializer, ReviewSerializer, RatingSerializer , FileSerializer
+from .serializers import MyProfileSerializer
 from rest_framework import generics, status
 from .filters import OrderFilter
 
@@ -28,14 +29,26 @@ class UserProfile(generics.RetrieveAPIView):
     serializer_class = UserSerializer
 
 
+
+
 class MyProfile(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    def get_object(self):
-        queryset = self.get_queryset()
-        obj = get_object_or_404(queryset, id=1)
-        return obj
+    # def get_object(self):
+    #     queryset = self.get_queryset()
+    #     obj = get_object_or_404(queryset, id=1)
+    #     return obj
+
+    def get(self, request, *args, **kwargs):
+        user = User.objects.get(id = 1)
+        serializer = MyProfileSerializer(data={'id':user.id,"username":user.username,
+                                               'bio':user.profile.bio,'fist_name':user.first_name,
+                                               "last_name":user.last_name,'instagram':user.profile.instagram,
+                                               'is_active':user.is_active,"location":user.profile.location,
+                                               'email':user.email,'birth_date':user.profile.birth_date})
+        serializer.is_valid()
+        return Response(serializer.data)
 
 
 class UserTodos(generics.ListAPIView):
