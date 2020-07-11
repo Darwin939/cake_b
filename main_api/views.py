@@ -52,6 +52,7 @@ class MyProfile(generics.RetrieveUpdateAPIView):
         user.profile.bio = data['bio']
         user.first_name = data['first_name']
         user.last_name = data['last_name']
+        user.profile.instagram = data['instagram']
         user.profile.location = data['location']
         user.email = data['email']
         user.profile.birth_date = data['birth_date']
