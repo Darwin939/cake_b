@@ -23,6 +23,7 @@ class MyProfileSerializer(serializers.Serializer):
     email = serializers.CharField(required=False)
     birth_date = serializers.DateField()
     location = serializers.CharField()
+    avatar = serializers.CharField()
 
 
 class UserSerializer(serializers.ModelSerializer):
