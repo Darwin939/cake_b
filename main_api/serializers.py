@@ -1,4 +1,6 @@
-from .models import Review, Order, Profile
+from django.conf import settings
+
+from .models import Review, Order, Profile,Avatar
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework.reverse import reverse
@@ -111,12 +113,22 @@ class RatingSerializer(serializers.Serializer):
 class FileSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Profile
-        fields = ['file']
+        model = Avatar
+        fields = "__all__"
+    def update(self, instance, validated_data):
 
-    def create(self, validated_data):
-        profile = Profile.objects.get(user='1')
-        print(validated_data)
-        profile.file = 'validated_data'
-        profile.save()
-        return profile
+        instance.file = validated_data.get('file', instance.file)
+        instance.user = validated_data.get('user',instance.user)
+        instance.save()
+        return instance
+
+class AvatarSerializer(serializers.Serializer):
+    file = serializers.CharField()
+    user =  serializers.IntegerField()
+    #
+    # def create(self, validated_data):
+    #     profile = Profile.objects.get(user='1')
+    #     print(validated_data)
+    #     profile.file = 'validated_data'
+    #     profile.save()
+    #     return profile

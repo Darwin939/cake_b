@@ -13,7 +13,8 @@ urlpatterns = [
     path('myprofile/',MyProfile.as_view()),
     path('review/',UserReview.as_view()),
     path('rating/',Rating.as_view()),
-    path('upload',FileUpload.as_view())
+    path('avatar',FileUpload.as_view()),
+
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

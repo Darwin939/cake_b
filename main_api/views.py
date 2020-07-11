@@ -3,8 +3,9 @@ from rest_framework.parsers import FileUploadParser, JSONParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Order, User, Review ,Profile
-from .serializers import OrderSerializer, UserSerializer, TodoSerializer, ReviewSerializer, RatingSerializer , FileSerializer
+from .models import Order, User, Review ,Profile, Avatar
+from .serializers import OrderSerializer, UserSerializer, TodoSerializer, ReviewSerializer, RatingSerializer, \
+    FileSerializer, AvatarSerializer
 from .serializers import MyProfileSerializer
 from rest_framework import generics, status
 from .filters import OrderFilter
@@ -122,9 +123,12 @@ class Rating(APIView):
 
 class FileUpload(APIView):
     parser_class = (FileUploadParser,)
-
     def post(self, request, *args, **kwargs):
-
+        user = User.objects.get(id=1)
+        avatar = Avatar.objects.filter(user=1)
+        if avatar[0].file:
+            avatar[0].delete()
+        data = request.data.update({"user":user.id})
         file_serializer = FileSerializer(data=request.data)
 
         if file_serializer.is_valid():
@@ -132,3 +136,14 @@ class FileUpload(APIView):
             return Response(file_serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def get(self, request):
+        user = User.objects.get(id=1)
+
+        file_serializer = AvatarSerializer(data={'file':user.avatar.file.url,'user':user.id})
+        if file_serializer.is_valid():
+            return Response(file_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
