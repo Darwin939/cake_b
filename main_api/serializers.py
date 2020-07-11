@@ -11,16 +11,17 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class MyProfileSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    username = serializers.CharField()
+    id = serializers.IntegerField(read_only=True)
+    username = serializers.CharField(required=False)
     bio = serializers.CharField()
     first_name = serializers.CharField()
     last_name = serializers.CharField()
     instagram = serializers.CharField()
-    is_active = serializers.BooleanField()
-    email = serializers.CharField()
+    is_active = serializers.BooleanField(read_only=True)
+    email = serializers.CharField(required=False)
     birth_date = serializers.DateField()
-    location = serializers.DateField()
+    location = serializers.CharField()
+
 
 class UserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer()

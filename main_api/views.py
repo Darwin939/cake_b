@@ -1,5 +1,5 @@
 from rest_framework.generics import get_object_or_404
-from rest_framework.parsers import FileUploadParser
+from rest_framework.parsers import FileUploadParser, JSONParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -32,25 +32,39 @@ class UserProfile(generics.RetrieveAPIView):
 
 
 class MyProfile(generics.RetrieveUpdateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+    queryset = User.objects.get(id=1)
 
-    # def get_object(self):
-    #     queryset = self.get_queryset()
-    #     obj = get_object_or_404(queryset, id=1)
-    #     return obj
+    def get_serializer_class(self):
+        return MyProfileSerializer
 
     def get(self, request, *args, **kwargs):
         user = User.objects.get(id = 1)
         serializer = MyProfileSerializer(data={'id':user.id,"username":user.username,
-                                               'bio':user.profile.bio,'fist_name':user.first_name,
+                                               'bio':user.profile.bio,'fisrt_name':user.first_name,
                                                "last_name":user.last_name,'instagram':user.profile.instagram,
                                                'is_active':user.is_active,"location":user.profile.location,
                                                'email':user.email,'birth_date':user.profile.birth_date})
         serializer.is_valid()
         return Response(serializer.data)
+    def put(self, request, *args, **kwargs):
+        user = User.objects.get(id=1)
+        data = JSONParser().parse(request)
+        user.profile.bio = data['bio']
+        user.first_name = data['first_name']
+        user.last_name = data['last_name']
+        user.profile.location = data['location']
+        user.email = data['email']
+        user.profile.birth_date = data['birth_date']
 
+        user.save()
 
+        serializer= MyProfileSerializer(data={'id':user.id,"username":user.username,
+                                               'bio':user.profile.bio,'fisrt_name':user.first_name,
+                                               "last_name":user.last_name,'instagram':user.profile.instagram,
+                                               'is_active':user.is_active,"location":user.profile.location,
+                                               'email':user.email,'birth_date':user.profile.birth_date})
+        serializer.is_valid()
+        return Response(serializer.data)
 class UserTodos(generics.ListAPIView):
     queryset = Order.objects.all()
     serializer_class = TodoSerializer
