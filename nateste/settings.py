@@ -9,6 +9,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["thawing-reef-32246.herokuapp.com", "localhost"]
 
+SITE_URL = "https://thawing-reef-32246.herokuapp.com"
 # Application definition
 
 INSTALLED_APPS = [

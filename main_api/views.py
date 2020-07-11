@@ -1,7 +1,9 @@
+from django.conf import settings
 from rest_framework.generics import get_object_or_404
 from rest_framework.parsers import FileUploadParser, JSONParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
+import os
 
 from .models import Order, User, Review ,Profile, Avatar
 from .serializers import OrderSerializer, UserSerializer, TodoSerializer, ReviewSerializer, RatingSerializer, \
@@ -141,7 +143,9 @@ class FileUpload(APIView):
     def get(self, request):
         user = User.objects.get(id=1)
 
-        file_serializer = AvatarSerializer(data={'file':user.avatar.file.url,'user':user.id})
+        url = settings.SITE_URL+user.avatar.file.url
+
+        file_serializer = AvatarSerializer(data={'file':url,'user':user.id})
         if file_serializer.is_valid():
             return Response(file_serializer.data, status=status.HTTP_201_CREATED)
         return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
