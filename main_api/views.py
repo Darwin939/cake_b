@@ -14,7 +14,7 @@ from .filters import OrderFilter
 
 
 class OrderList(generics.ListCreateAPIView):
-    queryset = Order.objects.order_by('created_at')
+    queryset = Order.objects.order_by('-created_at')
     serializer_class = OrderSerializer
     filterset_class = OrderFilter
     def perform_create(self, serializer):
@@ -83,7 +83,7 @@ class UserTodo(generics.RetrieveUpdateAPIView):
 
 
 class UserReview(generics.ListCreateAPIView):
-    queryset = Review.objects.all()
+    queryset = Review.objects.all().order_by('created_at')
     serializer_class = ReviewSerializer
 
     def perform_create(self, serializer):
