@@ -19,7 +19,7 @@ class MyProfileSerializer(serializers.Serializer):
     first_name = serializers.CharField()
     last_name = serializers.CharField()
     instagram = serializers.CharField()
-    is_active = serializers.BooleanField(read_only=True)
+    is_active = serializers.BooleanField()
     email = serializers.CharField(required=False)
     birth_date = serializers.DateField()
     location = serializers.CharField()
