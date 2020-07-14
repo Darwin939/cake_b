@@ -83,7 +83,7 @@ class UserTodo(generics.RetrieveUpdateAPIView):
 
 
 class UserReview(generics.ListCreateAPIView):
-    queryset = Review.objects.all().order_by('created_at')
+    queryset = Review.objects.all().order_by('-created_at')
     serializer_class = ReviewSerializer
 
     def perform_create(self, serializer):
