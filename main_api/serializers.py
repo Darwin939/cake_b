@@ -81,16 +81,28 @@ class OrderSerializer(serializers.ModelSerializer):
                   'worker', "customer"]
         read_only_fields = ["is_active"]
 
+class CustomerSerializer(serializers.ModelSerializer):
+    """
+    User information without profile model
+    """
+    url = serializers.HyperlinkedIdentityField(
+        view_name='api:user'
+    )
+    class Meta:
+        model = User
+        depth = 1
+        fields = ['id', 'username', 'first_name', "last_name", 'is_active', 'avatar','url']
+
+
 
 class ReviewSerializer(serializers.ModelSerializer):
-    customer = UserSerializer(read_only=True)
+    customer = CustomerSerializer(read_only=True)
 
     class Meta:
         model = Review
 
-        fields = ['id', 'title', 'description', 'updated_at',
+        fields = ['id', 'title', 'description',
                   'created_at', 'rating', 'customer']
-        read_only_fields = ["customer"]
 
 
 class TodoSerializer(serializers.ModelSerializer):
