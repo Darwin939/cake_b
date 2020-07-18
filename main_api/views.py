@@ -73,6 +73,9 @@ class MyProfile(generics.RetrieveUpdateAPIView):
         serializer.is_valid()
         return Response(serializer.data)
 class UserTodos(generics.ListAPIView):
+    """
+    :return all user todos by descending deadline
+    """
     queryset = Order.objects.all().order_by("-deadline")
     serializer_class = TodoSerializer
 
