@@ -73,7 +73,7 @@ class MyProfile(generics.RetrieveUpdateAPIView):
         serializer.is_valid()
         return Response(serializer.data)
 class UserTodos(generics.ListAPIView):
-    queryset = Order.objects.all()
+    queryset = Order.objects.all().order_by("-deadline")
     serializer_class = TodoSerializer
 
 
