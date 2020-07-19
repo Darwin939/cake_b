@@ -69,7 +69,8 @@ class MyProfile(generics.RetrieveUpdateAPIView):
                                                'bio':user.profile.bio,'first_name':user.first_name,
                                                "last_name":user.last_name,'instagram':user.profile.instagram,
                                                'is_active':user.is_active,"location":user.profile.location,
-                                               'email':user.email,'birth_date':user.profile.birth_date})
+                                               'email':user.email,'birth_date':user.profile.birth_date,
+                                              'avatar':user.avatar.file.url})
         serializer.is_valid()
         return Response(serializer.data)
 class UserTodos(generics.ListAPIView):
