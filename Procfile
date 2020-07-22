@@ -1,1 +1,2 @@
-web: gunicorn nateste.wsgi
+web: daphne nateste.asgi:application
+

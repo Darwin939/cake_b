@@ -7,12 +7,14 @@ SECRET_KEY = 't3-4=+u(#%%@5d=%!vbcm!)48rdk*5ruh&5oku4-fm6&kxvgh&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["thawing-reef-32246.herokuapp.com", "localhost"]
+ALLOWED_HOSTS = ["*"]
 
 SITE_URL = "https://thawing-reef-32246.herokuapp.com"
+WS_CHAT_URL = "ws://192.168.1.110:8000/ws/chat/"
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -22,9 +24,9 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'main_api.apps.MainApiConfig',
+    'chat.apps.ChatConfig',
     'corsheaders',
-    'django_filters'
-
+    'django_filters',
 
 ]
 
@@ -64,7 +66,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
     'DATETIME_FORMAT': '%s',
-    'DEFAULT_FILTER_BACKENDS':['django_filters.rest_framework.DjangoFilterBackend']
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
 
 WSGI_APPLICATION = 'nateste.wsgi.application'
@@ -138,7 +140,22 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-
-#Media
-MEDIA_URL =  '/media/'
+# Media
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+
+
+#django channels
+
+
+# Channels
+ASGI_APPLICATION = 'nateste.routing.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": ['redis://h:p388650614fd18b4752c5201097a2df26ca255ae4059301d63bb33f9a1a05c97e@ec2-34-247-221-62.eu-west-1.compute.amazonaws.com:22389'],    #in host "127.0.0.1" in production redis
+        },
+    },
+}
