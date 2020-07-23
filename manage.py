@@ -19,3 +19,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+#daphne nateste.asgi:channel_layer --port 8000
