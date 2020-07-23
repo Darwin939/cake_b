@@ -145,7 +145,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # django channels
-
+REDIS_URL = "redis://h:p388650614fd18b4752c5201097a2df26ca255ae4059301d63bb33f9a1a05c97e@ec2-34-247-221-62.eu-west-1.compute.amazonaws.com:22389"
 
 # Channels
 ASGI_APPLICATION = 'nateste.routing.application'
