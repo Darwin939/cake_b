@@ -1,2 +1,1 @@
-web: daphne nateste.asgi:application --port 8000 --bind 0.0.0.0 -v2
-worker: python manage.py runworker -v2
+web: gunicorn nateste.wsgi
