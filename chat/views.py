@@ -1,30 +1,13 @@
 from django.contrib.auth.models import User
-from rest_framework import permissions
-from rest_framework.generics import (
-    ListAPIView,
-    RetrieveAPIView,
-    CreateAPIView,
-    DestroyAPIView,
-    UpdateAPIView
-)
+
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from random import randint
 from chat.models import Chat, Contact
-from chat.serializer import ContactSerializer, ChatSerializer
 from django.db import connection
 from django.conf import settings
 
 
-class ChatListView(ListAPIView):
-    queryset = Chat.objects.all()
-    serializer_class = ChatSerializer
-
-
-class ChatDetailView(RetrieveAPIView):
-    queryset = Chat.objects.all()
-    serializer_class = ChatSerializer
-    # permission_classes = (permissions.AllowAny, )
 
 
 class ChatGiveView(APIView):
@@ -51,7 +34,10 @@ class ChatGiveView(APIView):
                 for participant in chat.participants.all():
                     if participant.user == self.quest:
                         self.room_name = chat.url
+            if not self.room_name:
+                raise ValueError
         except Exception as err:
+            print(err)
             self.room_name = str(randint(1, 999999999999))
             chat = Chat.objects.create(
                 # participants = self.master,
@@ -66,11 +52,3 @@ class ChatGiveView(APIView):
         return Response(data)
 
 
-class ChatUpdateView(UpdateAPIView):
-    queryset = Chat.objects.all()
-    serializer_class = ChatSerializer
-
-
-class ChatDeleteView(DestroyAPIView):
-    queryset = Chat.objects.all()
-    serializer_class = ChatSerializer
