@@ -10,7 +10,7 @@ DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 SITE_URL = "https://thawing-reef-32246.herokuapp.com"
-WS_CHAT_URL = "ws://192.168.1.110:8000/ws/chat/"
+WS_CHAT_URL = "ws://https://thawing-reef-32246.herokuapp.com/ws/chat/"
 # Application definition
 
 INSTALLED_APPS = [
