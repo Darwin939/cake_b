@@ -4,12 +4,16 @@ from channels.generic.websocket import WebsocketConsumer
 from .models import Chat, User, Contact , Message
 from random import randint
 from django.db import connection
-from .utils import get_last_10_messages, get_user_contact, get_current_chat
+from .utils import get_last_messages, get_user_contact, get_current_chat
 from datetime import datetime
 
 class ChatConsumer(WebsocketConsumer):
     def fetch_messages(self, data):
-        messages = get_last_10_messages(self.room_name)
+        try:
+            page= data["page"]
+        except:
+            page = 1
+        messages = get_last_messages(url=self.room_name,page = page)
         content = {
             'command': 'messages',
             'messages': self.messages_to_json(messages)
