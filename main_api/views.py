@@ -35,7 +35,7 @@ class UserProfile(generics.RetrieveAPIView):
 
 
 class MyProfile(generics.RetrieveUpdateAPIView):
-    queryset = User.objects.get(id=1)
+    queryset = User.objects.get(id=1) #session user / request.user
 
     def get_serializer_class(self):
         return MyProfileSerializer
@@ -73,6 +73,7 @@ class MyProfile(generics.RetrieveUpdateAPIView):
                                               'avatar':user.avatar.file.url})
         serializer.is_valid()
         return Response(serializer.data)
+
 class UserTodos(generics.ListAPIView):
     """
     :return all user todos by descending deadline
@@ -87,12 +88,12 @@ class UserTodo(generics.RetrieveUpdateAPIView):
 
 
 class UserReview(generics.ListCreateAPIView):
-    queryset = Review.objects.all().order_by('-created_at')
+    queryset = Review.objects.filter(worker_id=1).order_by('-created_at') #TODO request.user
     serializer_class = ReviewSerializer
 
     def perform_create(self, serializer):
-        user = User.objects.get(pk=1)  # TODO in production set to self.request.user
-        worker = User.objects.get(pk=2)
+        user = User.objects.get(pk=3)  # TODO in production set to self.request.user
+        worker = User.objects.get(pk=1)
         serializer.save(customer=user, worker=worker)
 
 
@@ -102,7 +103,7 @@ class Rating(APIView):
 
     def get(self, request):
 
-        queryset = Review.objects.filter(worker_id=2)
+        queryset = Review.objects.filter(worker_id=1) #TODO reques.user
         counts = [{"number":'5','value':0},
                   {"number":'4','value':0},
                   {"number":'3','value':0},

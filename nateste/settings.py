@@ -14,14 +14,14 @@ WS_CHAT_URL = "ws://https://thawing-reef-32246.herokuapp.com/ws/chat/"
 # Application definition
 
 INSTALLED_APPS = [
-    'channels',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'channels',
     'rest_framework',
     'main_api.apps.MainApiConfig',
     'chat.apps.ChatConfig',
@@ -77,15 +77,15 @@ WSGI_APPLICATION = 'nateste.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'tyqcokht',
-        'HOST': 'balarama.db.elephantsql.com',
+        'NAME': 'd975ogplphmhgq',
+        'HOST': 'ec2-54-247-122-209.eu-west-1.compute.amazonaws.com',
         'PORT': '5432',
-        'PASSWORD': 'UI7mFIzxsqjXk2YwD6fXqKgFOr63zESB',
-        'USER': 'tyqcokht'
+        'PASSWORD': 'cc655d814ce583f6c5c166e1fe5bdaf1fdd34f2d9c531c46d4b0f280e302dcc6',
+        'USER': 'vpeicwrpbzwhdv'
 
     }
 }
-DATABASE_URL = "postgres://tyqcokht:UI7mFIzxsqjXk2YwD6fXqKgFOr63zESB@balarama.db.elephantsql.com:5432/tyqcokht"
+DATABASE_URL = "postgresql://ec2-54-247-122-209.eu-west-1.compute.amazonaws.com:5432/d975ogplphmhgq"
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
