@@ -5,7 +5,7 @@ from .models import Chat, User, Contact , Message
 from random import randint
 from django.db import connection
 from .utils import get_last_10_messages, get_user_contact, get_current_chat
-
+from datetime import datetime
 
 class ChatConsumer(WebsocketConsumer):
     def fetch_messages(self, data):
@@ -21,8 +21,9 @@ class ChatConsumer(WebsocketConsumer):
             'id': message.id,
             'author': message.contact.user.username,
             'content': message.content,
-            'timestamp': str(message.timestamp)
+            'timestamp': str(int(datetime.timestamp(message.timestamp)))
         }
+
 
     def messages_to_json(self, messages):
         result = []
