@@ -1,1 +1,1 @@
-web: gunicorn nateste.wsgi
+web: daphne -b 0.0.0.0 -p 8000 nateste.asgi:application
