@@ -1,1 +1,2 @@
-web: daphne nateste.asgi:application
+web: daphne nateste.asgi:channel_layer --port $PORT --bind 0.0.0.0 -v2
+chatworker: python manage.py runworker --settings=nateste.settings -v2
