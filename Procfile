@@ -1,1 +1,1 @@
-web: daphne nateste.asgi:application
+web: python3 manage.py runserver
