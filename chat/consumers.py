@@ -36,9 +36,15 @@ class ChatConsumer(WebsocketConsumer):
         return result
 
     def new_message(self, data):
+        """
+
+        self.quest = это текущий пользователь который пишет сообщение
+        self.master = это хозяин чата, второй с которым гест хочет общаться
+        :return:
+        """
         url = Chat.objects.filter(url=self.room_name)
-        self.quest = url[0].participants.all()[0]
-        self.master = url[0].participants.all()[1]
+        self.quest = url[0].participants.all()[0]   #TODO  scope.request.user
+        self.master = url[0].participants.all()[1]   #TODO не знаю как брать второво польователя
 
         user_contact = get_user_contact(self.quest)
         message = Message.objects.create(
