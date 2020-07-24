@@ -1,6 +1,6 @@
 from django.conf import settings
 
-from .models import Review, Order, Profile,Avatar
+from .models import Review, Order, Profile, Avatar
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework.reverse import reverse
@@ -9,7 +9,7 @@ from rest_framework.reverse import reverse
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ["bio", 'location', 'birth_date','instagram']
+        fields = ["bio", 'location', 'birth_date', 'instagram']
 
 
 class MyProfileSerializer(serializers.Serializer):
@@ -29,7 +29,6 @@ class MyProfileSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer()
 
-
     url = serializers.HyperlinkedIdentityField(
         view_name='api:user'
     )
@@ -37,7 +36,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         depth = 1
-        fields = ['id', 'username','profile', 'first_name', "last_name", 'email', 'is_active', 'url','avatar']
+        fields = ['id', 'username', 'profile', 'first_name', "last_name", 'email', 'is_active', 'url', 'avatar']
 
     def update(self, instance, validated_data):
         profile_data = validated_data.pop('profile')
@@ -81,6 +80,17 @@ class OrderSerializer(serializers.ModelSerializer):
                   'worker', "customer"]
         read_only_fields = ["is_active"]
 
+
+class MyOrderSerializer(serializers.ModelSerializer):
+    customer = UserSerializer(read_only=True)
+
+    class Meta:
+        depth = 1
+        model = Order
+        fields = ['id', 'title', "deadline", 'description', 'is_active', 'weight', 'price', 'created_at', 'updated_at',
+                  "customer"]
+
+
 class CustomerSerializer(serializers.ModelSerializer):
     """
     User information without profile model
@@ -88,11 +98,11 @@ class CustomerSerializer(serializers.ModelSerializer):
     url = serializers.HyperlinkedIdentityField(
         view_name='api:user'
     )
+
     class Meta:
         model = User
         depth = 1
-        fields = ['id', 'username', 'first_name', "last_name", 'is_active', 'avatar','url']
-
+        fields = ['id', 'username', 'first_name', "last_name", 'is_active', 'avatar', 'url']
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -124,20 +134,20 @@ class RatingSerializer(serializers.Serializer):
 
 
 class FileSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Avatar
         fields = "__all__"
-    def update(self, instance, validated_data):
 
+    def update(self, instance, validated_data):
         instance.file = validated_data.get('file', instance.file)
-        instance.user = validated_data.get('user',instance.user)
+        instance.user = validated_data.get('user', instance.user)
         instance.save()
         return instance
 
+
 class AvatarSerializer(serializers.Serializer):
     file = serializers.CharField()
-    user =  serializers.IntegerField()
+    user = serializers.IntegerField()
     #
     # def create(self, validated_data):
     #     profile = Profile.objects.get(user='1')
