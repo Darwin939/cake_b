@@ -2,11 +2,12 @@ from django.contrib.auth.models import User
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from random import randint
 from chat.models import Chat, Contact
 from django.db import connection
 from django.conf import settings
-
+from .serializer import ChatSerializer
 
 
 
@@ -51,4 +52,8 @@ class ChatGiveView(APIView):
 
         return Response(data)
 
+class ChatListView(ListAPIView):
 
+    queryset = Chat.objects.filter(participants__user=1)  #TODO request.user
+    print(queryset)
+    serializer_class = ChatSerializer
