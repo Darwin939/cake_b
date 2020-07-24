@@ -10,7 +10,7 @@ from rest_framework import generics, status
 from .filters import OrderFilter
 
 
-class OrderList(generics.ListCreateAPIView):
+class OrderList(generics.ListCreateAPIView):   #TODO заказы без воркера
     queryset = Order.objects.order_by('-created_at')
     serializer_class = OrderSerializer
     filterset_class = OrderFilter
@@ -75,7 +75,7 @@ class UserTodos(generics.ListAPIView):
     """
     :return all user todos by descending deadline
     """
-    queryset = Order.objects.all().order_by("-deadline")
+    queryset = Order.objects.filter(worker_id=1).order_by("-deadline") #TODO request.user
     serializer_class = TodoSerializer
 
 
