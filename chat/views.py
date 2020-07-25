@@ -75,6 +75,7 @@ class ChatListView(APIView):
             for participant in chat.participants.all():
                 if participant.user.username == user.username:
                     continue
+                tmp['username'] = participant.user.username
                 tmp['first_name'] = participant.user.first_name
                 tmp['last_name'] = participant.user.last_name
                 tmp['last_login'] = str(int(datetime.timestamp(participant.user.last_login)))
