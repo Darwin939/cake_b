@@ -25,6 +25,8 @@ class Chat(models.Model):
     participants = models.ManyToManyField(
         Contact, related_name='chats', blank=True)
     messages = models.ManyToManyField(Message, blank=True)
+    id_in_user_list = models.IntegerField(blank = True, null = True)
+    #id in chat list
     url = models.TextField(blank=True)
 
     def __str__(self):

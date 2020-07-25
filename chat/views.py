@@ -54,11 +54,9 @@ class ChatGiveView(APIView):
 
 class ChatListView(APIView):
 
-    # queryset = Chat.objects.filter(participants__user=1)  #TODO request.user
-    # serializer_class = ChatSerializer
     def get(self,request):
 
-        object = Chat.objects.filter(participants__user=1)
+        object = Chat.objects.filter(participants__user=1) #TODO request.user
         page = request.query_params.get('page',1)
         paginator = Paginator(object,10)
         try:
@@ -79,6 +77,8 @@ class ChatListView(APIView):
                     continue
                 tmp['first_name'] = participant.user.first_name
                 tmp['last_name'] = participant.user.last_name
+                tmp['last_login'] = participant.user.last_login
+                tmp["is_online"] = participant.user.is_active
                 try:
                     url = settings.SITE_URL + participant.user.avatar.file.url
                     tmp['avatar'] = url
