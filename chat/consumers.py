@@ -23,7 +23,7 @@ class ChatConsumer(WebsocketConsumer):
 
     def message_to_json(self, message):
         return {
-            'id': message.id,
+            'id': message.id_in_chat,
             'author': message.contact.user.username,
             'content': message.content,
             'timestamp': str(int(datetime.timestamp(message.timestamp)))
@@ -49,9 +49,16 @@ class ChatConsumer(WebsocketConsumer):
 
 
         user_contact = get_user_contact(self.quest)
+        try:
+            id_chat = chat[0].messages.all()[0].id_in_chat+1
+            print(id_chat)
+        except:
+            id_chat = 1
         message = chat[0].messages.create(
             contact=user_contact,
-            content=data['message'])
+            content=data['message'],
+            id_in_chat= id_chat
+            )
         message.save()
         content = {
             'command': 'new_message',
