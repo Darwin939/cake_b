@@ -13,6 +13,7 @@ class ChatConsumer(WebsocketConsumer):
             page= data["page"]
         except:
             page = 1
+
         messages = get_last_messages(url=self.room_name,page = page)
         content = {
             'command': 'messages',
@@ -42,17 +43,16 @@ class ChatConsumer(WebsocketConsumer):
         self.master = это хозяин чата, второй с которым гест хочет общаться
         :return:
         """
-        url = Chat.objects.filter(url=self.room_name)
-        self.quest = url[0].participants.all()[0]   #TODO  scope.request.user
-        self.master = url[0].participants.all()[1]   #TODO не знаю как брать второво польователя
+        chat = Chat.objects.filter(url=self.room_name)
+        self.quest = chat[0].participants.all()[0]   #TODO  scope.request.user
+        self.master = chat[0].participants.all()[1]   #TODO не знаю как брать второво польователя
+
 
         user_contact = get_user_contact(self.quest)
-        message = Message.objects.create(
+        message = chat[0].messages.create(
             contact=user_contact,
             content=data['message'])
-        current_chat = get_current_chat(self.room_name)
-        current_chat.messages.add(message)
-        current_chat.save()
+        message.save()
         content = {
             'command': 'new_message',
             'message': self.message_to_json(message)

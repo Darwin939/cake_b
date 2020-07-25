@@ -8,7 +8,7 @@ from chat.models import Chat, Contact
 from django.db import connection
 from django.conf import settings
 from .serializer import ChatSerializer
-
+from django.core.paginator import Paginator
 
 
 class ChatGiveView(APIView):
@@ -52,8 +52,38 @@ class ChatGiveView(APIView):
 
         return Response(data)
 
-class ChatListView(ListAPIView):
+class ChatListView(APIView):
 
-    queryset = Chat.objects.filter(participants__user=1)  #TODO request.user
-    print(queryset)
-    serializer_class = ChatSerializer
+    # queryset = Chat.objects.filter(participants__user=1)  #TODO request.user
+    # serializer_class = ChatSerializer
+    def get(self,request):
+
+        object = Chat.objects.filter(participants__user=1)
+        page = request.query_params.get('page',1)
+        paginator = Paginator(object,10)
+        try:
+            chats = paginator.page(page)
+        except:
+            return Response([])
+        user  = User.objects.get(id=1)          #TODO request.user
+        res = []
+        for chat in chats:
+            if chat.participants.count() == 1:
+                continue
+            tmp = {}
+            tmp['id'] = chat.id   #return unique chat id
+            ws_url = settings.WS_CHAT_URL+chat.url+'/'
+            tmp['url'] = ws_url
+            for participant in chat.participants.all():
+                if participant.user.username == user.username:
+                    continue
+                tmp['first_name'] = participant.user.first_name
+                tmp['last_name'] = participant.user.last_name
+                try:
+                    url = settings.SITE_URL + participant.user.avatar.file.url
+                    tmp['avatar'] = url
+                except:
+                    tmp['avatar'] = 'none'
+
+            res.append(tmp)
+        return Response(res)

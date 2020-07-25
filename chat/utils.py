@@ -14,7 +14,7 @@ def get_last_messages(url,page):
     """
     chat = get_object_or_404(Chat, url = url)
     messages = chat.messages.order_by('-timestamp').all()
-    paginator = Paginator(messages,15)
+    paginator = Paginator(messages,50   )
     try:
         res = paginator.page(page)
     except:
