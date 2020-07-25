@@ -9,7 +9,7 @@ from django.db import connection
 from django.conf import settings
 from .serializer import ChatSerializer
 from django.core.paginator import Paginator
-
+from datetime import datetime
 
 class ChatGiveView(APIView):
     def get(self, request, pk):
@@ -77,8 +77,7 @@ class ChatListView(APIView):
                     continue
                 tmp['first_name'] = participant.user.first_name
                 tmp['last_name'] = participant.user.last_name
-                tmp['last_login'] = participant.user.last_login
-                tmp["is_online"] = participant.user.is_active
+                tmp['last_login'] = str(int(datetime.timestamp(participant.user.last_login)))
                 try:
                     url = settings.SITE_URL + participant.user.avatar.file.url
                     tmp['avatar'] = url
