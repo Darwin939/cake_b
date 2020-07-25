@@ -50,7 +50,7 @@ class ChatConsumer(WebsocketConsumer):
 
         user_contact = get_user_contact(self.quest)
         try:
-            id_chat = chat[0].messages.all()[0].id_in_chat+1
+            id_chat = chat[0].messages.order_by('-timestamp')[0].id_in_chat+1
             print(id_chat)
         except:
             id_chat = 1
