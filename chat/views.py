@@ -47,8 +47,8 @@ class ChatGiveView(APIView):
 
             chat.participants.add(quest_contact, master_contact)
         connection.close()
-        ws_url = settings.WS_CHAT_URL+self.room_name+"/"
-        data = {"websocket_url":ws_url}
+        ws_url = self.room_name
+        data = {"websocket_room":ws_url}
 
         return Response(data)
 

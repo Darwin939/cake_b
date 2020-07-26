@@ -1,10 +1,13 @@
 import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
+from django.conf import settings
+from django.core.paginator import Paginator
+
 from .models import Chat, User, Contact , Message
 from random import randint
 from django.db import connection
-from .utils import get_last_messages, get_user_contact, get_current_chat
+from .utils import get_last_messages, get_user_contact, get_current_chat , get_user_list_chats
 from datetime import datetime
 
 class ChatConsumer(WebsocketConsumer):
@@ -24,9 +27,10 @@ class ChatConsumer(WebsocketConsumer):
     def message_to_json(self, message):
         return {
             'id': message.id_in_chat,
-            'username': message.contact.user.username,
+            'from_username': message.contact.user.username,
             'content': message.content,
-            'timestamp': str(int(datetime.timestamp(message.timestamp)))
+            'timestamp': str(int(datetime.timestamp(message.timestamp))),
+            # 'room'
         }
 
 
@@ -43,7 +47,8 @@ class ChatConsumer(WebsocketConsumer):
         self.master = это хозяин чата, второй с которым гест хочет общаться
         :return:
         """
-        chat = Chat.objects.filter(url=self.room_name)
+        chat_url = data["room"]
+        chat = Chat.objects.filter(url=chat_url)
         self.quest = chat[0].participants.all()[0]   #TODO  scope.request.user
         self.master = chat[0].participants.all()[1]   #TODO не знаю как брать второво польователя
 
@@ -51,7 +56,7 @@ class ChatConsumer(WebsocketConsumer):
         user_contact = get_user_contact(self.quest)
         try:
             id_chat = chat[0].messages.order_by('-timestamp')[0].id_in_chat+1
-            print(id_chat)
+
         except:
             id_chat = 1
         message = chat[0].messages.create(
@@ -62,24 +67,39 @@ class ChatConsumer(WebsocketConsumer):
         message.save()
         content = {
             'command': 'new_message',
-            'message': self.message_to_json(message)
+            'message': self.message_to_json(message),
+            'room': data['room'],
+            "group_user_id" : self.master.user.id
         }
+
         return self.send_chat_message(content)
+
+    def list_rooms(self,data):
+        user_id = 1  # TODO
+        res = get_user_list_chats(data,user_id=user_id)
+        return self.send_message(res)
 
     commands = {
         'fetch_messages': fetch_messages,
-        'new_message': new_message
+        'new_message': new_message,
+        'list_rooms': list_rooms
     }
 
     def connect(self):
+        #check_scope
+        self.accept()
+        self.connect_to_room()
+    def connect_to_room(self):
+        """
+        connect to room and check user is valid?
+        :return:
+        """
         self.room_name = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'chat_%s' % self.room_name
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name,
             self.channel_name
         )
-        self.accept()
-
     def disconnect(self, close_code):
 
         # Leave room group
@@ -91,7 +111,7 @@ class ChatConsumer(WebsocketConsumer):
 
     def send_chat_message(self, message):
         async_to_sync(self.channel_layer.group_send)(
-            self.room_group_name,
+            'chat_%s' % message['group_user_id'],
             {
                 'type': 'chat_message',
                 'message': message
