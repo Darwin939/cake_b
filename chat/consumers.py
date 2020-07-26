@@ -17,7 +17,7 @@ class ChatConsumer(WebsocketConsumer):
         except:
             page = 1
 
-        messages = get_last_messages(url=self.room_name,page = page)
+        messages = get_last_messages(url=data['room'],page = page)
         content = {
             'command': 'messages',
             'messages': self.messages_to_json(messages)
@@ -86,12 +86,16 @@ class ChatConsumer(WebsocketConsumer):
     }
 
     def connect(self):
+        #проверять зареган ли пользователь
         #check_scope
         self.accept()
         self.connect_to_room()
+
+
     def connect_to_room(self):
         """
         connect to room and check user is valid?
+        room_name = scope[user]
         :return:
         """
         self.room_name = self.scope['url_route']['kwargs']['room_name']
