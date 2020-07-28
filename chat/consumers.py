@@ -1,14 +1,10 @@
 import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
-from django.conf import settings
-from django.core.paginator import Paginator
-from django.shortcuts import get_object_or_404
-
-from .models import Chat, User, Contact, Message
+from .models import Chat, User, Contact
 from random import randint
 from django.db import connection
-from .utils import get_last_messages, get_user_contact, get_current_chat, list_chats
+from .utils import get_last_messages, get_user_contact, list_chats
 from datetime import datetime
 
 
@@ -20,7 +16,7 @@ class ChatConsumer(WebsocketConsumer):
         except:
             page = 1
 
-        messages = get_last_messages(recipient=recipient,sender=self.sender_id, page=page)
+        messages = get_last_messages(recipient=recipient, sender=self.sender_id, page=page)
         content = {
             'command': 'messages',
             'messages': self.messages_to_json(messages)

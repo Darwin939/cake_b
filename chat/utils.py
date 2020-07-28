@@ -63,7 +63,8 @@ def list_chats(data, user_id):
             tmp['username'] = participant.user.username
             tmp['first_name'] = participant.user.first_name
             tmp['last_name'] = participant.user.last_name
-            # tmp['last_login'] = str(int(datetime.timestamp(participant.user.last_login)))
+            # tmp['last_login'] = str(int(datetime.timestamp(participant.user.last_login)))  #if exist
+            tmp['user_id'] = participant.user.id
             try:
                 url = settings.SITE_URL + participant.user.avatar.file.url
                 tmp['avatar'] = url
