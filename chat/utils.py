@@ -35,8 +35,10 @@ def get_current_chat(url):
 
 def list_chats(data, user_id):
     object = Chat.objects.filter(participants__user=user_id)  # TODO request.user
+
     try:
         page = data['page']
+
     except:
         page = 1
     paginator = Paginator(object, 10)
@@ -46,9 +48,11 @@ def list_chats(data, user_id):
         return []
     user = User.objects.get(id=user_id)  # TODO request.user
     res = []
+
     for chat in chats:
         if chat.participants.count() == 1:
             continue
+
         tmp = {}
         tmp['id'] = chat.id  # return unique chat id
         ws_url = chat.url
@@ -67,4 +71,4 @@ def list_chats(data, user_id):
                 tmp['avatar'] = 'none'
 
         res.append(tmp)
-        return res
+    return res
