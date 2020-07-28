@@ -1,20 +1,22 @@
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404
-from .models import Chat, Contact ,User
+from .models import Chat, Contact, User
 from django.core.paginator import Paginator
 
 
-
-def get_last_messages(url,page):
+def get_last_messages(recipient, sender, page):
     """
     Get last messages by page
     :param url: room name
     :param page:
     :return: 15 last messages
     """
-    chat = get_object_or_404(Chat, url = url)
+    chat = Chat.objects.filter(
+        participants__user_id=sender
+    ).filter(participants__user_id=recipient).first()
+
     messages = chat.messages.order_by('-timestamp').all()
-    paginator = Paginator(messages,50   )
+    paginator = Paginator(messages, 50)
     try:
         res = paginator.page(page)
     except:
@@ -22,17 +24,21 @@ def get_last_messages(url,page):
     return res
 
 
-def get_user_contact(username):
-    user = get_object_or_404(User, username=username)
+def get_user_contact(id):
+    user = get_object_or_404(User, id=id)
     return get_object_or_404(Contact, user=user)
 
 
 def get_current_chat(url):
-    return get_object_or_404(Chat, url = url)
+    return get_object_or_404(Chat, url=url)
 
-def get_user_list_chats(data,user_id):
+
+def list_chats(data, user_id):
     object = Chat.objects.filter(participants__user=user_id)  # TODO request.user
-    page = data['page']
+    try:
+        page = data['page']
+    except:
+        page = 1
     paginator = Paginator(object, 10)
     try:
         chats = paginator.page(page)
