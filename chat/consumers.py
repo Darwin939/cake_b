@@ -28,7 +28,7 @@ class ChatConsumer(WebsocketConsumer):
             'id': message.id_in_chat,
             'content': message.content,
             'timestamp': str(int(datetime.timestamp(message.timestamp))),
-            'author':message.contact.user.username
+            'author': message.contact.user.username
         }
 
     def messages_to_json(self, messages):
@@ -105,10 +105,9 @@ class ChatConsumer(WebsocketConsumer):
 
         return self.send_chat_message(content)
 
-    def pong(self,data):
-        message = {"pong":"pong"}
+    def pong(self, data):
+        message = {"pong": "pong"}
         self.send_message(message)
-
 
     def list_chat(self, data):
         user_id = self.sender_id
@@ -159,15 +158,15 @@ class ChatConsumer(WebsocketConsumer):
         )
 
     def send_chat_message(self, message):
-        self.recipient_chat = 'chat_%s' % message['recipient_id']
-
-        async_to_sync(self.channel_layer.group_send)(
-            self.recipient_chat,
-            {
-                'type': 'chat_message',
-                'message': message
-            }
-        )
+        self.recipient_chats = ['chat_%s' % message['recipient_id'], self.room_group_name]
+        for chat in self.recipient_chats:
+            async_to_sync(self.channel_layer.group_send)(
+                chat,
+                {
+                    'type': 'chat_message',
+                    'message': message
+                }
+            )
 
     def send_message(self, message):
         self.send(text_data=json.dumps(message))
