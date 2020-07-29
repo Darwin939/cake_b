@@ -106,7 +106,7 @@ class ChatConsumer(WebsocketConsumer):
         return self.send_chat_message(content)
 
     def pong(self,data):
-        message = {"pon g":"pong"}
+        message = {"pong":"pong"}
         self.send_message(message)
 
 
