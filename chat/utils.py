@@ -47,7 +47,9 @@ def list_chats(data, user_id):
     except:
         return []
     user = User.objects.get(id=user_id)  # TODO request.user
-    res = []
+    res = {}
+    res['command'] = "list_chats"
+    chat_list = []
 
     for chat in chats:
         if chat.participants.count() == 1:
@@ -71,5 +73,7 @@ def list_chats(data, user_id):
             except:
                 tmp['avatar'] = 'none'
 
-        res.append(tmp)
+
+        chat_list.append(tmp)
+    res['list_chats'] = chat_list
     return res
