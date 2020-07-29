@@ -105,6 +105,11 @@ class ChatConsumer(WebsocketConsumer):
 
         return self.send_chat_message(content)
 
+    def pong(self,data):
+        message = {"pong":"pong"}
+        self.send_message(message)
+
+
     def list_chat(self, data):
         user_id = self.sender_id
         res = list_chats(data, user_id=user_id)
@@ -113,7 +118,8 @@ class ChatConsumer(WebsocketConsumer):
     commands = {
         'fetch_messages': fetch_messages,
         'new_message': new_message,
-        'list_chats': list_chat
+        'list_chats': list_chat,
+        'ping': pong,
     }
 
     def connect(self):
