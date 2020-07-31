@@ -4,7 +4,7 @@ from channels.generic.websocket import WebsocketConsumer
 from .models import Chat, User, Contact
 from random import randint
 from django.db import connection
-from .utils import get_last_messages, get_user_contact, list_chats
+from .utils import get_last_messages, get_user_contact, list_chats, return_new_unread_message
 from datetime import datetime
 
 
@@ -65,10 +65,45 @@ class ChatConsumer(WebsocketConsumer):
 
         connection.close()
         return chat
+    def unread_messages(self,data):
+        """
+        Возвразщает все непрочитанные сообщения,
+        возвращает все сообщения в которых was_read == False
+        входнные данные:{command:unread_messages,}
+        :param data:
+        :return: {"command":"unread_messsage",
+                    "messages":[
+                    {"id":"1","content":"message","author":"username","recipient":"1","timestamp":'513'},
+                    {}
+                    ]
+                    }
+        """
+        data = {"page":"1"}
+        chat_list = list_chats(data,self.sender_id)['list_chats']
+        result = {}
+        result["command"] = "unread_message"
+        all_messages = []
+        result["unread_messages"] = all_messages
+        for chat in chat_list:
+            user_id = chat['user_id']
+            messages = return_new_unread_message(user_id,sender_id=self.sender_id)
+            tmp = {}
+            tmp["from_user_id"] = user_id
+            tmp["messages"] = messages
+            all_messages.append(tmp)
+
+        self.send_message(result)
+
+
+
+
+
 
     def new_message(self, data):
         """
+        Возвращает все прочитанные сообшения
         NOTE: нельзя отправлять себе
+
         :param data:
         :return:
         """
@@ -119,6 +154,7 @@ class ChatConsumer(WebsocketConsumer):
         'new_message': new_message,
         'list_chats': list_chat,
         'ping': pong,
+        "unread_messages":unread_messages
     }
 
     def connect(self):
@@ -156,7 +192,7 @@ class ChatConsumer(WebsocketConsumer):
             self.room_group_name,
             self.channel_name
         )
-
+        
     def send_chat_message(self, message):
         self.recipient_chats = ['chat_%s' % message['recipient_id'], self.room_group_name]
         for chat in self.recipient_chats:

@@ -17,6 +17,8 @@ class Message(models.Model):
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
     id_in_chat = models.IntegerField(blank=True,null=True)
+    was_read = models.BooleanField(default=False,null=True)
+    was_read_time = models.DateTimeField(blank=True,null=True)
     def __str__(self):
         return self.contact.user.username
 

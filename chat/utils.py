@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404
-from .models import Chat, Contact, User
+from datetime import datetime
+
+from .models import Chat, Contact, User, Message
 from django.core.paginator import Paginator
 
 
@@ -16,6 +18,7 @@ def get_last_messages(recipient, sender, page):
     ).filter(participants__user_id=recipient).first()
 
     messages = chat.messages.order_by('-timestamp').all()
+    messages.update(was_read = True)
     paginator = Paginator(messages, 50)
     try:
         res = paginator.page(page)
@@ -77,3 +80,32 @@ def list_chats(data, user_id):
         chat_list.append(tmp)
     res['list_chats'] = chat_list
     return res
+
+def read_messages(message):
+    """
+    Читать все сообщения
+    менять was_read на True
+    :param message:
+    :return:
+    """
+    pass
+
+def return_new_unread_message(user_id,sender_id):
+    chat = Chat.objects.filter(
+        participants__user_id=user_id
+    ).filter(participants__user_id=sender_id).first()
+    messages = chat.messages.filter(was_read = False,contact__user_id=user_id)
+    tmp = []
+
+    for message in messages:
+        a = {}
+        a["id"] = message.id_in_chat
+        a["content"] = message.content
+        a["timestamp"] = str(int(datetime.timestamp(message.timestamp)))
+        a["author"] = message.contact.user.username
+
+        tmp.append(a)
+
+
+    return tmp
+
