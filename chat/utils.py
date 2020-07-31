@@ -18,7 +18,9 @@ def get_last_messages(recipient, sender, page):
     ).filter(participants__user_id=recipient).first()
 
     messages = chat.messages.order_by('-timestamp').all()
-    messages.update(was_read = True)
+    unread = messages.filter( contact__user_id=recipient)
+    unread.update(was_read = True)
+
     paginator = Paginator(messages, 50)
     try:
         res = paginator.page(page)
