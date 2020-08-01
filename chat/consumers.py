@@ -5,11 +5,18 @@ from .models import Chat, User, Contact
 from random import randint
 from django.db import connection
 from .utils import get_last_messages, get_user_contact, list_chats, return_new_unread_message, message_to_json, \
-    messages_to_json
+    messages_to_json, get_or_register_contact, create_chat_add_participant, get_current_chat
 from datetime import datetime
 
 
 class ChatConsumer(WebsocketConsumer):
+    """
+       This chat consumer handles websocket connections for chat clients.
+       It uses AsyncJsonWebsocketConsumer, which means all the handling functions
+       must be async functions, and any sync work (like ORM access) has to be
+       behind database_sync_to_async or sync_to_async. For more, read
+       http://channels.readthedocs.io/en/latest/topics/consumers.html
+       """
     def fetch_messages(self, data):
         recipient = data["recipient"]
         try:
@@ -34,25 +41,10 @@ class ChatConsumer(WebsocketConsumer):
         """
         self.sender = User.objects.get(id=sender_id)
         self.recipient = User.objects.get(id=recipient_id)
+        sender_contact = get_or_register_contact(self.sender)
+        recipient_contact = get_or_register_contact(self.sender)
+        chat = create_chat_add_participant(sender_contact,recipient_contact)
 
-        if not Contact.objects.filter(user=self.sender):
-            sender_contact = Contact.objects.create(user=self.sender)
-            sender_contact.save()
-        sender_contact = Contact.objects.get(user=self.sender)
-
-        if not Contact.objects.filter(user=self.recipient):
-            recipient_contact = Contact.objects.create(user=self.recipient)
-            recipient_contact.save()
-
-        recipient_contact = Contact.objects.get(user=self.recipient)
-
-        self.room_name = str(randint(1, 999999999999))
-        chat = Chat.objects.create(
-            url=self.room_name)
-        chat.save()
-        chat.participants.add(sender_contact, recipient_contact)
-
-        connection.close()
         return chat
 
     def unread_messages(self, data):
@@ -96,9 +88,7 @@ class ChatConsumer(WebsocketConsumer):
         :return:
         """
         self.recipient_id = data["recipient"]
-        self.chat = Chat.objects.filter(
-            participants__user_id=self.sender_id
-        ).filter(participants__user_id=self.recipient_id).first()
+        self.chat = get_current_chat(self.recipient_id,self.sender_id)
         # если  такого чата нет и не зарегистрированы контакты
         if not self.chat:
             self.chat = self.register_contact_and_give_chat(self.sender_id,

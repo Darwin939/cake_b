@@ -166,7 +166,7 @@ def return_new_unread_message(user_id, sender_id):
     return tmp
 
 
-def message_to_json(self, message):
+def message_to_json( message):
     return {
         'id': message.id_in_chat,
         'content': message.content,
@@ -175,8 +175,32 @@ def message_to_json(self, message):
     }
 
 
-def messages_to_json(self, messages):
+def messages_to_json(messages):
     result = []
     for message in messages:
         result.append(message_to_json(message))
     return result
+
+def get_or_register_contact(user):
+    """
+    Проверяет и Создает пользователю контакт
+    :return: Contact
+    """
+    if not Contact.objects.filter(user=user):
+        sender_contact = Contact.objects.create(user=user)
+        sender_contact.save()
+    user_contact = Contact.objects.get(user=user)
+
+    return user_contact
+
+def create_chat_add_participant(user1,user2):
+    """
+    Create chat. then add all participant to chat
+    :param user1: sender
+    :param user2: participant
+    :return:
+    """
+    chat = Chat.objects.create()
+    chat.save()
+    chat.participants.add(user1, user2)
+    return chat
