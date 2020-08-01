@@ -5,7 +5,7 @@ from .models import Chat, User, Contact
 from random import randint
 from django.db import connection
 from .utils import get_last_messages, get_user_contact, list_chats, return_new_unread_message, message_to_json, \
-    messages_to_json, get_or_register_contact, create_chat_add_participant, get_current_chat
+    messages_to_json, get_or_register_contact, create_chat_add_participant, get_current_chat, create_message
 from datetime import datetime
 
 
@@ -24,10 +24,14 @@ class ChatConsumer(WebsocketConsumer):
         except:
             page = 1
 
-        messages = get_last_messages(recipient=recipient, sender=self.sender_id, page=page)
+        messages,page_number,has_next = get_last_messages(recipient=recipient, sender=self.sender_id, page=page)
+
         content = {
             'command': 'messages',
+            "page_number": page_number,
+            'next': has_next,
             'messages': messages_to_json(messages)
+
         }
         self.send_message(content)
 
@@ -103,12 +107,8 @@ class ChatConsumer(WebsocketConsumer):
         except:
             id_chat = 1
 
-        message = self.chat.messages.create(
-            contact=self.sender_contact,
-            content=data['message'],
-            id_in_chat=id_chat
-        )
-        message.save()
+        message = create_message(self.chat,self.sender_contact,
+                                 data,id_chat)
         content = {
             'command': 'new_message',
             'message': message_to_json(message),

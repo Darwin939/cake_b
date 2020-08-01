@@ -19,11 +19,19 @@ def get_last_messages(recipient, sender, page):
     unread.update(was_read=True)
 
     paginator = Paginator(messages, 50)
+    #has more next page
+
+    page_number = paginator.num_pages
     try:
         res = paginator.page(page)
+        has_next = res.has_next()
+
     except:
         res = []
-    return res
+        has_next = False
+    return res,page_number,has_next
+
+
 
 
 def get_last_message(sender_id, recipient_id):
@@ -93,11 +101,14 @@ def list_chats(data, user_id):
     paginator = Paginator(object, 10)
     try:
         chats = paginator.page(page)
+        has_next = chats.has_next()
     except:
         return []
+        has_next = False
     user = User.objects.get(id=user_id)  # TODO request.user
     res = {}
     res['command'] = "list_chats"
+    res['next'] = has_next
     chat_list = []
 
     for chat in chats:
@@ -204,3 +215,12 @@ def create_chat_add_participant(user1,user2):
     chat.save()
     chat.participants.add(user1, user2)
     return chat
+
+def create_message(chat,contact,content,id_in_chat):
+    message = chat.messages.create(
+        contact=contact,
+        content=content['message'],
+        id_in_chat=id_in_chat
+    )
+    message.save()
+    return message
