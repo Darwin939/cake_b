@@ -13,13 +13,10 @@ def get_last_messages(recipient, sender, page):
     :param page:
     :return: 15 last messages
     """
-    chat = Chat.objects.filter(
-        participants__user_id=sender
-    ).filter(participants__user_id=recipient).first()
-
-    messages = chat.messages.order_by('-timestamp').all()
-    unread = messages.filter( contact__user_id=recipient)
-    unread.update(was_read = True)
+    chat = get_current_chat(sender, recipient)
+    messages = get_chat_messages(chat)
+    unread = messages.filter(contact__user_id=recipient)
+    unread.update(was_read=True)
 
     paginator = Paginator(messages, 50)
     try:
@@ -29,16 +26,63 @@ def get_last_messages(recipient, sender, page):
     return res
 
 
+def get_last_message(sender_id, recipient_id):
+    """
+    Возвращает последнее сообщение с датой
+    :return: dict
+    """
+    result = {}
+
+    try:
+        chat = get_current_chat(sender_id, recipient_id)
+        message = get_chat_messages(chat)[0]
+        result["id"] = message.id_in_chat
+        result["content"] = message.content
+        result["author"] = message.contact.user.username
+        result["timestamp"] = str(int(datetime.timestamp(message.timestamp)))
+    except:
+        pass
+
+    return result
+
+
 def get_user_contact(id):
     user = get_object_or_404(User, id=id)
     return get_object_or_404(Contact, user=user)
 
 
-def get_current_chat(url):
-    return get_object_or_404(Chat, url=url)
+def get_chat_messages(chat):
+    """
+    Сообщения отсортированные по времени
+    :param chat:
+    :return:
+    """
+
+    messages = chat.messages.order_by('-timestamp').all()
+
+    return messages
+
+
+def get_current_chat(sender, recipient):
+    """
+
+            :param id:
+            :return:
+            """
+    chat = Chat.objects.filter(
+        participants__user_id=sender
+    ).filter(participants__user_id=recipient).first()
+
+    return chat
 
 
 def list_chats(data, user_id):
+    """
+                Чаты с последними сообщения ,
+                сортируя по последним сообщениям
+                :param data:
+                :return:
+    """
     object = Chat.objects.filter(participants__user=user_id)  # TODO request.user
 
     try:
@@ -72,16 +116,26 @@ def list_chats(data, user_id):
             tmp['last_name'] = participant.user.last_name
             # tmp['last_login'] = str(int(datetime.timestamp(participant.user.last_login)))  #if exist
             tmp['user_id'] = participant.user.id
+            tmp["last_message"] = get_last_message(sender_id=user_id,
+                                                   recipient_id=tmp["user_id"])
+            try:
+                tmp["last_message_time"] = get_last_message(sender_id=user_id,
+                                                            recipient_id=tmp["user_id"])['timestamp']
+            except:
+                tmp["last_message_time"] = ""
+
             try:
                 url = settings.SITE_URL + participant.user.avatar.file.url
                 tmp['avatar'] = url
             except:
                 tmp['avatar'] = 'none'
 
-
         chat_list.append(tmp)
+    chat_list = sorted(chat_list, key=lambda x: x["last_message_time"],reverse=True)
     res['list_chats'] = chat_list
+
     return res
+
 
 def read_messages(message):
     """
@@ -92,11 +146,12 @@ def read_messages(message):
     """
     pass
 
-def return_new_unread_message(user_id,sender_id):
+
+def return_new_unread_message(user_id, sender_id):
     chat = Chat.objects.filter(
         participants__user_id=user_id
     ).filter(participants__user_id=sender_id).first()
-    messages = chat.messages.filter(was_read = False,contact__user_id=user_id)
+    messages = chat.messages.filter(was_read=False, contact__user_id=user_id)
     tmp = []
 
     for message in messages:
@@ -108,6 +163,4 @@ def return_new_unread_message(user_id,sender_id):
 
         tmp.append(a)
 
-
     return tmp
-

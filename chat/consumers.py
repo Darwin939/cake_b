@@ -145,6 +145,12 @@ class ChatConsumer(WebsocketConsumer):
         self.send_message(message)
 
     def list_chat(self, data):
+        """
+        Чаты с последними сообщения ,
+        сортируя по последним сообщениям
+        :param data:
+        :return:
+        """
         user_id = self.sender_id
         res = list_chats(data, user_id=user_id)
         return self.send_message(res)
