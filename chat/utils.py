@@ -131,7 +131,7 @@ def list_chats(data, user_id):
                 tmp['avatar'] = 'none'
 
         chat_list.append(tmp)
-    chat_list = sorted(chat_list, key=lambda x: x["last_message_time"],reverse=True)
+    chat_list = sorted(chat_list, key=lambda x: x["last_message_time"], reverse=True)
     res['list_chats'] = chat_list
 
     return res
@@ -164,3 +164,19 @@ def return_new_unread_message(user_id, sender_id):
         tmp.append(a)
 
     return tmp
+
+
+def message_to_json(self, message):
+    return {
+        'id': message.id_in_chat,
+        'content': message.content,
+        'timestamp': str(int(datetime.timestamp(message.timestamp))),
+        'author': message.contact.user.username
+    }
+
+
+def messages_to_json(self, messages):
+    result = []
+    for message in messages:
+        result.append(message_to_json(message))
+    return result

@@ -26,3 +26,13 @@ class ChatSerializer(serializers.ModelSerializer):
         depth = 2
         fields = ['id', 'participants', 'url']
         read_only = ('id')
+
+class MessageSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    content = serializers.CharField(max_length=2000)
+    timestamp = serializers.DateTimeField()
+    author = serializers.CharField(max_length=50)
+
+
+class MessagesSerializer(serializers.Serializer):
+    messages = MessageSerializer(many=True)
