@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     'chat.apps.ChatConfig',
     'corsheaders',
     'django_filters',
-
+    'authorization.apps.AuthorizationConfig'
 ]
 
 MIDDLEWARE = [
