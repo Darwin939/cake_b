@@ -27,7 +27,11 @@ INSTALLED_APPS = [
     'chat.apps.ChatConfig',
     'corsheaders',
     'django_filters',
-    'authorization.apps.AuthorizationConfig'
+    'authorization.apps.AuthorizationConfig',
+    'frontend.apps.FrontendConfig',
+
+    # serving static React
+    'whitenoise.runserver_nostatic',
 ]
 
 MIDDLEWARE = [
@@ -49,7 +53,7 @@ ROOT_URLCONF = 'nateste.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'static/build')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -136,9 +140,9 @@ CORS_ORIGIN_REGEX_WHITELIST = [
 ]
 
 # declare static files for browsarable-api in restframework
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, "static")
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media
 MEDIA_URL = '/media/'
@@ -154,9 +158,24 @@ CHANNEL_LAYERS = {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
             "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
-                 # ['redis://h:p388650614fd18b4752c5201097a2df26ca255ae4059301d63bb33f9a1a05c97e@ec2-34-247-221-62.eu-west-1.compute.amazonaws.com:22389'],
+            # ['redis://h:p388650614fd18b4752c5201097a2df26ca255ae4059301d63bb33f9a1a05c97e@ec2-34-247-221-62.eu-west-1.compute.amazonaws.com:22389'],
             # in host "127.0.0.1" in production redis
         },
 
     },
 }
+
+
+
+#static
+
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static",'build', 'static')]
+
+STATICFILES_STORAGE = (
+    'whitenoise.storage.CompressedManifestStaticFilesStorage')
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+STATIC_URL = '/static/'  # already declared in the default settings
+
+WHITENOISE_ROOT = os.path.join(BASE_DIR, 'build', 'root')

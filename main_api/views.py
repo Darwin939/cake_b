@@ -37,7 +37,7 @@ class MyProfile(generics.RetrieveUpdateAPIView):
         return MyProfileSerializer
 
     def get(self, request, *args, **kwargs):
-        user = User.objects.get(id=1)
+        user = User.objects.get(id=request.user)
         url = settings.SITE_URL + user.avatar.file.url
         serializer = MyProfileSerializer(data={'id': user.id, "username": user.username,
                                                'bio': user.profile.bio, 'first_name': user.first_name,
