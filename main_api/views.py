@@ -33,12 +33,19 @@ class UserProfile(generics.RetrieveAPIView):
 class MyProfile(generics.RetrieveUpdateAPIView):
     queryset = User.objects.get(id=1)  # session user / request.user
 
+
+
     def get_serializer_class(self):
         return MyProfileSerializer
 
     def get(self, request, *args, **kwargs):
-        user = User.objects.get(id=request.user)
-        url = settings.SITE_URL + user.avatar.file.url
+
+        #permissiom and allow
+        user = User.objects.get(id=request.user.id)
+        try:
+            url = settings.SITE_URL + user.avatar.file.url
+        except:
+            url = None
         serializer = MyProfileSerializer(data={'id': user.id, "username": user.username,
                                                'bio': user.profile.bio, 'first_name': user.first_name,
                                                "last_name": user.last_name, 'instagram': user.profile.instagram,
@@ -49,7 +56,7 @@ class MyProfile(generics.RetrieveUpdateAPIView):
         return Response(serializer.data)
 
     def put(self, request, *args, **kwargs):
-        user = User.objects.get(id=1)
+        user = User.objects.get(id=request.user)
         data = JSONParser().parse(request)
         user.profile.bio = data['bio']
         user.first_name = data['first_name']
@@ -75,7 +82,10 @@ class UserTodos(generics.ListAPIView):
     """
     :return all user todos by descending deadline
     """
-    queryset = Order.objects.filter(worker_id=1).order_by("-deadline") #TODO request.user
+
+    def get_queryset(self):
+        queryset = Order.objects.filter(worker_id=self.request.user.id).order_by("-deadline")
+        return  queryset
     serializer_class = TodoSerializer
 
 

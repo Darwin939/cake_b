@@ -28,10 +28,9 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_filters',
     'authorization.apps.AuthorizationConfig',
-    'frontend.apps.FrontendConfig',
 
     # serving static React
-    'whitenoise.runserver_nostatic',
+
 ]
 
 MIDDLEWARE = [
@@ -142,8 +141,11 @@ CORS_ORIGIN_REGEX_WHITELIST = [
 # declare static files for browsarable-api in restframework
 # STATIC_URL = '/static/'
 # STATIC_ROOT = os.path.join(BASE_DIR, "static")
+#
+# STATICFILES_DIRS = (
+#     os.path.join(BASE_DIR, 'static',  "build",'static'),  # update the STATICFILES_DIRS
+# )
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 # Media
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
@@ -158,24 +160,17 @@ CHANNEL_LAYERS = {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
             "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
-            # ['redis://h:p388650614fd18b4752c5201097a2df26ca255ae4059301d63bb33f9a1a05c97e@ec2-34-247-221-62.eu-west-1.compute.amazonaws.com:22389'],
-            # in host "127.0.0.1" in production redis
+
         },
 
     },
 }
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
 
-
-#static
-
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static",'build', 'static')]
-
-STATICFILES_STORAGE = (
-    'whitenoise.storage.CompressedManifestStaticFilesStorage')
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
-STATIC_URL = '/static/'  # already declared in the default settings
-
-WHITENOISE_ROOT = os.path.join(BASE_DIR, 'build', 'root')
+# Extra places for collectstatic to find static files.
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static','build','static'),
+)
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
