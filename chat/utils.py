@@ -147,6 +147,19 @@ def list_chats(data, user_id):
 
     return res
 
+def clear_unread_messages_util(sender,recipient):
+    """
+    очищает непрочитанные сообщения
+    с выбранным собеседником
+    :return:
+    """
+    chat = get_current_chat(sender,recipient)
+    messages = get_chat_messages(chat)
+    unread = messages.filter(contact__user_id=recipient)
+    unread.update(was_read=True)
+    response = {"command":"clear_unread_messages",
+                "result":"success"}
+    return response
 
 def read_messages(message):
     """

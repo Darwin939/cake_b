@@ -5,7 +5,8 @@ from .models import Chat, User, Contact
 from random import randint
 from django.db import connection
 from .utils import get_last_messages, get_user_contact, list_chats, return_new_unread_message, message_to_json, \
-    messages_to_json, get_or_register_contact, create_chat_add_participant, get_current_chat, create_message
+    messages_to_json, get_or_register_contact, create_chat_add_participant, get_current_chat, create_message, \
+    clear_unread_message_util, clear_unread_messages_util
 from datetime import datetime
 
 
@@ -122,6 +123,11 @@ class ChatConsumer(WebsocketConsumer):
         message = {"pong": "pong"}
         self.send_message(message)
 
+    def clear_unread_messages(self,data):
+        recipient_id = data["recipient"]
+        response = clear_unread_messages_util(self.sender_id,recipient_id)
+        self.send_message(response)
+
     def list_chat(self, data):
         """
         Чаты с последними сообщения ,
@@ -138,8 +144,10 @@ class ChatConsumer(WebsocketConsumer):
         'new_message': new_message,
         'list_chats': list_chat,
         'ping': pong,
-        "unread_messages": unread_messages
+        "unread_messages": unread_messages,
+        'clear_unread_messages':clear_unread_messages
     }
+
 
     def connect(self):
         self.accept()
