@@ -5,8 +5,7 @@ from .models import Chat, User, Contact
 from random import randint
 from django.db import connection
 from .utils import get_last_messages, get_user_contact, list_chats, return_new_unread_message, message_to_json, \
-    messages_to_json, get_or_register_contact, create_chat_add_participant, get_current_chat, create_message, \
-    clear_unread_message_util, clear_unread_messages_util
+    messages_to_json, get_or_register_contact, create_chat_add_participant, get_current_chat, create_message,  clear_unread_messages_util
 from datetime import datetime
 
 
@@ -18,6 +17,7 @@ class ChatConsumer(WebsocketConsumer):
        behind database_sync_to_async or sync_to_async. For more, read
        http://channels.readthedocs.io/en/latest/topics/consumers.html
        """
+
     def fetch_messages(self, data):
         recipient = data["recipient"]
         try:
@@ -25,7 +25,7 @@ class ChatConsumer(WebsocketConsumer):
         except:
             page = 1
 
-        messages,page_number,has_next = get_last_messages(recipient=recipient, sender=self.sender_id, page=page)
+        messages, page_number, has_next = get_last_messages(recipient=recipient, sender=self.sender_id, page=page)
 
         content = {
             'command': 'messages',
@@ -35,8 +35,6 @@ class ChatConsumer(WebsocketConsumer):
 
         }
         self.send_message(content)
-
-
 
     def register_contact_and_give_chat(self, sender_id, recipient_id):
         """
@@ -48,7 +46,7 @@ class ChatConsumer(WebsocketConsumer):
         self.recipient = User.objects.get(id=recipient_id)
         sender_contact = get_or_register_contact(self.sender)
         recipient_contact = get_or_register_contact(self.sender)
-        chat = create_chat_add_participant(sender_contact,recipient_contact)
+        chat = create_chat_add_participant(sender_contact, recipient_contact)
 
         return chat
 
@@ -93,7 +91,7 @@ class ChatConsumer(WebsocketConsumer):
         :return:
         """
         self.recipient_id = data["recipient"]
-        self.chat = get_current_chat(self.recipient_id,self.sender_id)
+        self.chat = get_current_chat(self.recipient_id, self.sender_id)
         # если  такого чата нет и не зарегистрированы контакты
         if not self.chat:
             self.chat = self.register_contact_and_give_chat(self.sender_id,
@@ -108,8 +106,8 @@ class ChatConsumer(WebsocketConsumer):
         except:
             id_chat = 1
 
-        message = create_message(self.chat,self.sender_contact,
-                                 data,id_chat)
+        message = create_message(self.chat, self.sender_contact,
+                                 data, id_chat)
         content = {
             'command': 'new_message',
             'message': message_to_json(message),
@@ -123,9 +121,9 @@ class ChatConsumer(WebsocketConsumer):
         message = {"pong": "pong"}
         self.send_message(message)
 
-    def clear_unread_messages(self,data):
+    def clear_unread_messages(self, data):
         recipient_id = data["recipient"]
-        response = clear_unread_messages_util(self.sender_id,recipient_id)
+        response = clear_unread_messages_util(self.sender_id, recipient_id)
         self.send_message(response)
 
     def list_chat(self, data):
@@ -145,9 +143,8 @@ class ChatConsumer(WebsocketConsumer):
         'list_chats': list_chat,
         'ping': pong,
         "unread_messages": unread_messages,
-        'clear_unread_messages':clear_unread_messages
+        'clear_unread_messages': clear_unread_messages
     }
-
 
     def connect(self):
         self.accept()
