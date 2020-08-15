@@ -6,11 +6,11 @@ from .models import Order, User, Review, Avatar
 from .serializers import OrderSerializer, UserSerializer, TodoSerializer, ReviewSerializer, RatingSerializer, \
     FileSerializer, AvatarSerializer, MyOrderSerializer
 from .serializers import MyProfileSerializer
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from .filters import OrderFilter
 
 
-class OrderList(generics.ListCreateAPIView):   #TODO заказы без воркера
+class OrderList(generics.ListCreateAPIView):  # TODO заказы без воркера
     queryset = Order.objects.order_by('-created_at')
     serializer_class = OrderSerializer
     filterset_class = OrderFilter
@@ -31,17 +31,14 @@ class UserProfile(generics.RetrieveAPIView):
 
 
 class MyProfile(generics.RetrieveUpdateAPIView):
-    queryset = User.objects.get(id=1)  # session user / request.user
-
-
+    # queryset = User.objects.get(id=request.user)  # session user / request.user
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
         return MyProfileSerializer
 
     def get(self, request, *args, **kwargs):
-
-        #permissiom and allow
-        user = User.objects.get(id=1) #request.user.id
+        user = User.objects.get(id=request.user.id)  # request.user.id
         try:
             url = settings.SITE_URL + user.avatar.file.url
         except:
@@ -56,7 +53,7 @@ class MyProfile(generics.RetrieveUpdateAPIView):
         return Response(serializer.data)
 
     def put(self, request, *args, **kwargs):
-        user = User.objects.get(id=1)
+        user = User.objects.get(id=request.user.id)
         data = JSONParser().parse(request)
         user.profile.bio = data['bio']
         user.first_name = data['first_name']
@@ -84,9 +81,10 @@ class UserTodos(generics.ListAPIView):
     """
 
     def get_queryset(self):
-        queryset = Order.objects.filter(worker_id=1).order_by("-deadline") #self.request.user.id
-        #self.request.user.id
-        return  queryset
+        queryset = Order.objects.filter(worker_id=1).order_by("-deadline")  # self.request.user.id
+        # self.request.user.id
+        return queryset
+
     serializer_class = TodoSerializer
 
 
@@ -129,9 +127,12 @@ class Rating(APIView):
             elif query.rating == 5:
                 counts[0]['value'] += 1
             quantity += 1
-        print(counts)
-        average = (5 * counts[0]['value'] + 4 * counts[1]['value'] + 3 * counts[2]['value'] + 2 * counts[3]["value"] +
-                   counts[4]['value']) / quantity
+        try:
+            average = (5 * counts[0]['value'] + 4 * counts[1]['value'] + 3 * counts[2]['value'] + 2 * counts[3][
+                "value"] +
+                       counts[4]['value']) / quantity
+        except ZeroDivisionError:
+            average = 0
         data = {'counts': counts, 'quantity': quantity, 'average': average}
         serializer = RatingSerializer(data)
         data = serializer.data

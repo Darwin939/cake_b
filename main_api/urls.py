@@ -11,7 +11,7 @@ urlpatterns = [
     path('user/<int:pk>', UserProfile.as_view(), name='user'),
     path('todo/', UserTodos.as_view()),
     path('todo/<int:pk>', UserTodo.as_view(), name='todo'),
-    path('myprofile/', MyProfile.as_view()),
+    path('myprofile/', MyProfile.as_view(), name = 'myprofile'),
     path('review/', UserReview.as_view()),
     path('rating/', Rating.as_view()),
     path('avatar/', FileUpload.as_view()),
