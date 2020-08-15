@@ -1,6 +1,9 @@
+import json
+
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.http import JsonResponse
+from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics
@@ -15,23 +18,24 @@ class UserCreate(generics.CreateAPIView):
     serializer_class = UserSerializer
     permission_classes = (AllowAny,)
 
-
+@csrf_exempt
 def login_view(request):
     if request.method == "POST":
         req = request.POST.dict()
-        username = req['uname']
-        password = req['psw']
+        username = req["username"]
+        password = req['password']
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
             login(request,user)
-            return JsonResponse(({"detail": "login and password correct"}))
+            return  redirect('mainpage')
+            # return JsonResponse(({"detail": "login and password correct"}))
         else:
             return JsonResponse(({"detail": "login or password incorrect"}))
     return JsonResponse(({"username": "myusername",
                          "password": "mypassword"}))
 
-
+@csrf_exempt
 def logout_view(request):
     logout(request)
     return  JsonResponse({"detail":"you succesfully login outed"})

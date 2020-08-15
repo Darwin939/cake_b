@@ -21,7 +21,7 @@ urlpatterns = [
     path('api/', include(('main_api.urls'), namespace="api")),
     path('chat/',include(('chat.urls'))),
     path('auth/',include('authorization.urls')),
-    path('',index),
+    path('',index , name = "mainpage"),
 ]
 
 if settings.DEBUG:

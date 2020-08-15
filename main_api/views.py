@@ -1,4 +1,6 @@
 from django.conf import settings
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import FileUploadParser, JSONParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -10,11 +12,18 @@ from rest_framework import generics, status, permissions
 from .filters import OrderFilter
 
 
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+
+    def enforce_csrf(self, request):
+        return  # To not perform the csrf check previously happening
+
 class OrderList(generics.ListCreateAPIView):  # TODO заказы без воркера
     queryset = Order.objects.order_by('-created_at')
     serializer_class = OrderSerializer
     filterset_class = OrderFilter
-
+    permission_classes = [permissions.IsAuthenticated]
     def perform_create(self, serializer):
         user = User.objects.get(pk=1)  # TODO in production set to self.request.user
         serializer.save(customer=user)
@@ -33,9 +42,10 @@ class UserProfile(generics.RetrieveAPIView):
 class MyProfile(generics.RetrieveUpdateAPIView):
     # queryset = User.objects.get(id=request.user)  # session user / request.user
     permission_classes = [permissions.IsAuthenticated]
-
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     def get_serializer_class(self):
         return MyProfileSerializer
+
 
     def get(self, request, *args, **kwargs):
         user = User.objects.get(id=request.user.id)  # request.user.id
@@ -52,6 +62,7 @@ class MyProfile(generics.RetrieveUpdateAPIView):
         serializer.is_valid()
         return Response(serializer.data)
 
+    @csrf_exempt
     def put(self, request, *args, **kwargs):
         user = User.objects.get(id=request.user.id)
         data = JSONParser().parse(request)
@@ -79,7 +90,7 @@ class UserTodos(generics.ListAPIView):
     """
     :return all user todos by descending deadline
     """
-
+    permission_classes = [permissions.IsAuthenticated]
     def get_queryset(self):
         queryset = Order.objects.filter(worker_id=1).order_by("-deadline")  # self.request.user.id
         # self.request.user.id
@@ -89,11 +100,13 @@ class UserTodos(generics.ListAPIView):
 
 
 class UserTodo(generics.RetrieveUpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Order.objects.all()
     serializer_class = TodoSerializer
 
 
 class UserReview(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Review.objects.filter(worker_id=1).order_by('-created_at')  # TODO request.user
     serializer_class = ReviewSerializer
 
@@ -104,7 +117,7 @@ class UserReview(generics.ListCreateAPIView):
 
 
 class Rating(APIView):
-
+    permission_classes = [permissions.IsAuthenticated]
     def get(self, request):
 
         queryset = Review.objects.filter(worker_id=1)  # TODO request.user
@@ -141,7 +154,7 @@ class Rating(APIView):
 
 class FileUpload(APIView):
     parser_class = (FileUploadParser,)
-
+    permission_classes = [permissions.IsAuthenticated]
     def post(self, request, *args, **kwargs):
         user = User.objects.get(id=1)
         avatar = Avatar.objects.filter(user=1)
@@ -160,7 +173,7 @@ class FileUpload(APIView):
             return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
-        user = User.objects.get(id=1)
+        user = User.objects.get(id=request.user.id)
 
         url = settings.SITE_URL + user.avatar.file.url
 
@@ -174,5 +187,6 @@ class MyOrders(generics.ListAPIView):
     """
     All my(cooker orders)
     """
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Order.objects.filter(worker_id=1).order_by('-created_at')  # TODO request.user
     serializer_class = MyOrderSerializer
