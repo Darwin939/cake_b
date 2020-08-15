@@ -5,19 +5,20 @@ from django.dispatch import receiver
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE,related_name="profile",blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="profile", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_cooker = models.BooleanField(default=False)
     bio = models.TextField(max_length=500, blank=True)
     location = models.CharField(max_length=50, blank=True)
     birth_date = models.DateField(null=True, blank=True)
-    instagram = models.CharField(max_length=100,blank=True)
-    whatsapp = models.CharField(max_length=100,blank=True)
-    telegram = models.CharField(max_length=100,blank=True)
+    instagram = models.CharField(max_length=100, blank=True)
+    whatsapp = models.CharField(max_length=100, blank=True)
+    telegram = models.CharField(max_length=100, blank=True)
     # TODO add avatar
     rating = models.IntegerField(default=0)
     file = models.FileField(blank=True, null=True)
+
     def __str__(self):
         return self.bio
 
@@ -60,13 +61,16 @@ class Review(models.Model):
                                related_name='worker_review')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    rating = models.IntegerField()
+    rating_variants = ((1,(1)),((2),(2)),((3),(3)),((4),(4)),((5),(5)))
+    rating = models.IntegerField(choices=rating_variants)
 
     def __str__(self):
         return self.title
 
+
 class Avatar(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="avatar")
     file = models.FileField(blank=True, null=True)
+
     def __str__(self):
         return self.file.name

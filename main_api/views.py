@@ -41,7 +41,7 @@ class MyProfile(generics.RetrieveUpdateAPIView):
     def get(self, request, *args, **kwargs):
 
         #permissiom and allow
-        user = User.objects.get(id=request.user.id)
+        user = User.objects.get(id=1) #request.user.id
         try:
             url = settings.SITE_URL + user.avatar.file.url
         except:
@@ -56,7 +56,7 @@ class MyProfile(generics.RetrieveUpdateAPIView):
         return Response(serializer.data)
 
     def put(self, request, *args, **kwargs):
-        user = User.objects.get(id=request.user)
+        user = User.objects.get(id=1)
         data = JSONParser().parse(request)
         user.profile.bio = data['bio']
         user.first_name = data['first_name']
@@ -84,7 +84,8 @@ class UserTodos(generics.ListAPIView):
     """
 
     def get_queryset(self):
-        queryset = Order.objects.filter(worker_id=self.request.user.id).order_by("-deadline")
+        queryset = Order.objects.filter(worker_id=1).order_by("-deadline") #self.request.user.id
+        #self.request.user.id
         return  queryset
     serializer_class = TodoSerializer
 
@@ -108,7 +109,7 @@ class Rating(APIView):
 
     def get(self, request):
 
-        queryset = Review.objects.filter(worker_id=1)  # TODO reques.user
+        queryset = Review.objects.filter(worker_id=1)  # TODO request.user
         counts = [{"number": '5', 'value': 0},
                   {"number": '4', 'value': 0},
                   {"number": '3', 'value': 0},
