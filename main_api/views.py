@@ -48,7 +48,7 @@ class MyProfile(generics.RetrieveUpdateAPIView):
 
 
     def get(self, request, *args, **kwargs):
-        user = User.objects.get(id=request.user.id)  # request.user.id
+        user = User.objects.get(id=1)  # request.user.id
         try:
             url = settings.SITE_URL + user.avatar.file.url
         except:
@@ -64,7 +64,7 @@ class MyProfile(generics.RetrieveUpdateAPIView):
 
     @csrf_exempt
     def put(self, request, *args, **kwargs):
-        user = User.objects.get(id=request.user.id)
+        user = User.objects.get(id=1)
         data = JSONParser().parse(request)
         user.profile.bio = data['bio']
         user.first_name = data['first_name']
@@ -173,7 +173,7 @@ class FileUpload(APIView):
             return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
-        user = User.objects.get(id=request.user.id)
+        user = User.objects.get(id=1)
 
         url = settings.SITE_URL + user.avatar.file.url
 
