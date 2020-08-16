@@ -3,7 +3,7 @@ import json
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.http import JsonResponse, HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics
@@ -28,9 +28,7 @@ def login_view(request):
 
         if user is not None:
             login(request,user)
-            response = HttpResponse('blah')
-            response.set_cookie('cookie_name', 'cookie_value')
-            return response
+            return render(request, "index.html").set_cookie('cookie_name', 'cookie_value')
         else:
             return JsonResponse(({"detail": "login or password incorrect"}))
     return JsonResponse(({"username": "myusername",

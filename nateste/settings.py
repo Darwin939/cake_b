@@ -13,6 +13,9 @@ SITE_URL = "https://thawing-reef-32246.herokuapp.com"
 WS_CHAT_URL = "ws://thawing-reef-32246.herokuapp.com/ws/chat/"
 # Application definition
 
+SESSION_COOKIE_SECURE= False
+SESSION_COOKIE_DOMAIN=  "localhost"
+
 INSTALLED_APPS = [
 
     'django.contrib.admin',
