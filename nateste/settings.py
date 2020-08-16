@@ -14,7 +14,8 @@ WS_CHAT_URL = "ws://thawing-reef-32246.herokuapp.com/ws/chat/"
 # Application definition
 
 SESSION_COOKIE_SECURE= False
-SESSION_COOKIE_DOMAIN=  "localhost"
+SESSION_COOKIE_SECURE= False #default use just to override your prod setting
+SESSION_COOKIE_DOMAIN= None
 
 INSTALLED_APPS = [
 
