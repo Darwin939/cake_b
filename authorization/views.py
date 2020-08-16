@@ -10,7 +10,7 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import logout
 from authorization.serializer import UserSerializer
-
+from rest_framework.response import Response
 
 @method_decorator(csrf_exempt, name='dispatch')
 class UserCreate(generics.CreateAPIView):
@@ -28,7 +28,7 @@ def login_view(request):
 
         if user is not None:
             login(request,user)
-            return render(request, "index.html").set_cookie('cookie_name', 'cookie_value')
+            return Response("as").set_cookie('cookie_name', 'cookie_value')
         else:
             return JsonResponse(({"detail": "login or password incorrect"}))
     return JsonResponse(({"username": "myusername",
