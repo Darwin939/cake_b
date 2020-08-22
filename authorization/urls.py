@@ -8,6 +8,6 @@ app_name = 'authorization'
 
 urlpatterns = [
     path('register/', csrf_exempt(views.UserCreate.as_view())),
-    path('login/',csrf_exempt(login_view)),
-    path('logout/',csrf_exempt(logout_view))
+    path('login/', csrf_exempt(login_view)),
+    path('logout/',csrf_exempt(logout_view)),
 ]

@@ -13,9 +13,9 @@ SITE_URL = "https://thawing-reef-32246.herokuapp.com"
 WS_CHAT_URL = "ws://thawing-reef-32246.herokuapp.com/ws/chat/"
 # Application definition
 
-SESSION_COOKIE_SECURE= False
-SESSION_COOKIE_SECURE= False #default use just to override your prod setting
-SESSION_COOKIE_DOMAIN= None
+SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False  # default use just to override your prod setting
+SESSION_COOKIE_DOMAIN = None
 
 INSTALLED_APPS = [
 
@@ -32,7 +32,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_filters',
     'authorization.apps.AuthorizationConfig',
-
     # serving static React
 
 ]
@@ -50,8 +49,6 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
 
 ]
-
-
 
 ROOT_URLCONF = 'nateste.urls'
 
@@ -75,7 +72,11 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
     'DATETIME_FORMAT': '%s',
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
 }
 
 WSGI_APPLICATION = 'nateste.wsgi.application'
@@ -171,7 +172,6 @@ CHANNEL_LAYERS = {
 
     },
 }
-
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
