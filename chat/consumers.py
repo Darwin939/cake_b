@@ -82,6 +82,16 @@ class ChatConsumer(WebsocketConsumer):
 
         self.send_message(result)
 
+    def my_id(self,data):
+        """return my id"""
+        try:
+            id = self.sender_id
+        except:
+            id = "unknown user"
+        message = {"my_id": id}
+        self.send_message(message)
+
+
     def new_message(self, data):
         """
         Возвращает все прочитанные сообшения
@@ -143,7 +153,8 @@ class ChatConsumer(WebsocketConsumer):
         'list_chats': list_chat,
         'ping': pong,
         "unread_messages": unread_messages,
-        'clear_unread_messages': clear_unread_messages
+        'clear_unread_messages': clear_unread_messages,
+        "my_id": my_id
     }
 
     def connect(self):
@@ -157,7 +168,7 @@ class ChatConsumer(WebsocketConsumer):
         :return:
         """
 
-        self.sender_id = self.scope["user"].id  #self.scope['url_route']['kwargs']['room_name']
+        self.sender_id = self.scope["user"].id   #self.scope['url_route']['kwargs']['room_name']
         print(self.sender_id)
         self.room_group_name = 'chat_%s' % self.sender_id
         async_to_sync(self.channel_layer.group_add)(
