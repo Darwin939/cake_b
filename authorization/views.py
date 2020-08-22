@@ -36,7 +36,9 @@ def login_view(request):
 @csrf_exempt
 def logout_view(request):
     logout(request)
-    return  JsonResponse({"detail":"you succesfully login outed"})
+    response = HttpResponse('Cookies has been deleted')
+    response.delete_cookie('cookie_name')
+    return response
 
 
 
