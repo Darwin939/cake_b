@@ -107,8 +107,14 @@ class UserTodo(generics.RetrieveUpdateAPIView):
 
 class UserReview(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
-    queryset = Review.objects.filter(worker_id=1).order_by('-created_at')  # TODO request.user
-    serializer_class = ReviewSerializer
+    # queryset = Review.objects.filter(worker_id=1).order_by('-created_at')  # TODO request.user
+    # serializer_class = ReviewSerializer
+    def get(self,request):
+        queryset = Review.objects.filter(worker_id=request.user.id).order_by('-created_at')
+        serializer = ReviewSerializer(data=queryset)
+        serializer.is_valid()
+        data = serializer.data
+        return Response(data)
 
     def perform_create(self, serializer):
         user = User.objects.get(pk=3)  # TODO in production set to self.request.user
