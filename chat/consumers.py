@@ -5,7 +5,8 @@ from .models import Chat, User, Contact
 from random import randint
 from django.db import connection
 from .utils import get_last_messages, get_user_contact, list_chats, return_new_unread_message, message_to_json, \
-    messages_to_json, get_or_register_contact, create_chat_add_participant, get_current_chat, create_message,  clear_unread_messages_util
+    messages_to_json, get_or_register_contact, create_chat_add_participant, get_current_chat, create_message, \
+    clear_unread_messages_util
 from datetime import datetime
 
 
@@ -82,15 +83,12 @@ class ChatConsumer(WebsocketConsumer):
 
         self.send_message(result)
 
-    def my_id(self,data):
+    def my_id(self, data):
         """return my id"""
-        try:
-            id = self.sender_id
-        except:
-            id = "unknown user"
-        message = {"my_id": id}
+        id = self.sender_id
+        message = {"command": "my_id",
+                   "my_id": id}
         self.send_message(message)
-
 
     def new_message(self, data):
         """
@@ -168,7 +166,7 @@ class ChatConsumer(WebsocketConsumer):
         :return:
         """
 
-        self.sender_id = self.scope["user"].id   #self.scope['url_route']['kwargs']['room_name']
+        self.sender_id = self.scope["user"].id  # self.scope['url_route']['kwargs']['room_name']
         print(self.sender_id)
         self.room_group_name = 'chat_%s' % self.sender_id
         async_to_sync(self.channel_layer.group_add)(
