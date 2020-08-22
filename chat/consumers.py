@@ -157,7 +157,7 @@ class ChatConsumer(WebsocketConsumer):
         :return:
         """
 
-        self.sender_id = self.scope['url_route']['kwargs']['room_name']  #self.scope["user"].id
+        self.sender_id = self.scope["user"].id  #self.scope['url_route']['kwargs']['room_name']
         print(self.sender_id)
         self.room_group_name = 'chat_%s' % self.sender_id
         async_to_sync(self.channel_layer.group_add)(
