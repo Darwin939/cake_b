@@ -48,7 +48,7 @@ class MyProfile(generics.RetrieveUpdateAPIView):
 
 
     def get(self, request, *args, **kwargs):
-        user = User.objects.get(id=1)  # request.user.id
+        user = User.objects.get(id=request.user.id)  # request.user.id
         try:
             url = settings.SITE_URL + user.avatar.file.url
         except:
@@ -64,7 +64,7 @@ class MyProfile(generics.RetrieveUpdateAPIView):
 
     @csrf_exempt
     def put(self, request, *args, **kwargs):
-        user = User.objects.get(id=1)
+        user = User.objects.get(id=request.user.id)
         data = JSONParser().parse(request)
         user.profile.bio = data['bio']
         user.first_name = data['first_name']
@@ -92,7 +92,7 @@ class UserTodos(generics.ListAPIView):
     """
     permission_classes = [permissions.IsAuthenticated]
     def get_queryset(self):
-        queryset = Order.objects.filter(worker_id=1).order_by("-deadline")  # self.request.user.id
+        queryset = Order.objects.filter(worker_id=self.request.user.id).order_by("-deadline")  # self.request.user.id
         # self.request.user.id
         return queryset
 
@@ -120,7 +120,7 @@ class Rating(APIView):
     permission_classes = [permissions.IsAuthenticated]
     def get(self, request):
 
-        queryset = Review.objects.filter(worker_id=1)  # TODO request.user
+        queryset = Review.objects.filter(worker_id=request.user.id)  # TODO request.user
         counts = [{"number": '5', 'value': 0},
                   {"number": '4', 'value': 0},
                   {"number": '3', 'value': 0},
@@ -156,8 +156,8 @@ class FileUpload(APIView):
     parser_class = (FileUploadParser,)
     permission_classes = [permissions.IsAuthenticated]
     def post(self, request, *args, **kwargs):
-        user = User.objects.get(id=1)
-        avatar = Avatar.objects.filter(user=1)
+        user = User.objects.get(id=request.user.id)
+        avatar = Avatar.objects.filter(user=request.user)
 
         try:
             avatar[0].delete()
@@ -173,7 +173,7 @@ class FileUpload(APIView):
             return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request):
-        user = User.objects.get(id=1)
+        user = User.objects.get(id=request.user.id)
 
         url = settings.SITE_URL + user.avatar.file.url
 
