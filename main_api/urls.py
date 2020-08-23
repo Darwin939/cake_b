@@ -5,7 +5,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from .views import OrderList, CreateUser, UserProfile, UserTodos, UserTodo, MyProfile, UserReview
 from .views import Rating, FileUpload,MyOrders
 
-app_name = 'cooker_service'
+app_name = 'main_api'
 urlpatterns = [
     path('findorders/', OrderList.as_view()),
     path('create_user/', CreateUser.as_view()),

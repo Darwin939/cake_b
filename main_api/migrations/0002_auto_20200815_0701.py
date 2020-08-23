@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('cooker_service', '0001_initial'),
+        ('main_api', '0001_initial'),
     ]
 
     operations = [

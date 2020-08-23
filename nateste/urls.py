@@ -19,7 +19,7 @@ def index(request):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(('cooker_service.urls'), namespace="api")),
+    path('api/', include(('main_api.urls'), namespace="api")),
     path('chat/',include(('chat.urls'))),
     path('auth/',include('authorization.urls')),
     path('',index , name = "mainpage"),

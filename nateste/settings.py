@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'channels',
     'rest_framework',
-    'cooker_service.apps.Cooker_ServiceConfig',
+    'main_api.apps.MainApiConfig',
     'chat.apps.ChatConfig',
     'corsheaders',
     'django_filters',
