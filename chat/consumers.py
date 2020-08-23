@@ -1,13 +1,10 @@
 import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
-from .models import Chat, User, Contact
-from random import randint
-from django.db import connection
+from .models import User
 from .utils import get_last_messages, get_user_contact, list_chats, return_new_unread_message, message_to_json, \
     messages_to_json, get_or_register_contact, create_chat_add_participant, get_current_chat, create_message, \
     clear_unread_messages_util
-from datetime import datetime
 
 
 class ChatConsumer(WebsocketConsumer):
@@ -17,7 +14,7 @@ class ChatConsumer(WebsocketConsumer):
        must be async functions, and any sync work (like ORM access) has to be
        behind database_sync_to_async or sync_to_async. For more, read
        http://channels.readthedocs.io/en/latest/topics/consumers.html
-       """
+    """
 
     def fetch_messages(self, data):
         recipient = data["recipient"]
@@ -166,8 +163,8 @@ class ChatConsumer(WebsocketConsumer):
         :return:
         """
 
-        self.sender_id =  str(self.scope["user"].id) # self.scope['url_route']['kwargs']['room_name']
-        print(self.sender_id)
+        self.sender_id = str(self.scope["user"].id)  # self.scope['url_route']['kwargs']['room_name']
+        # self.sender_id = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'chat_%s' % self.sender_id
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name,

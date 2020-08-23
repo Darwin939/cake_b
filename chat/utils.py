@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404
 from datetime import datetime
-
+import time
 from .models import Chat, Contact, User, Message
 from django.core.paginator import Paginator
 
@@ -125,8 +125,19 @@ def list_chats(data, user_id):
             tmp['username'] = participant.user.username
             tmp['first_name'] = participant.user.first_name
             tmp['last_name'] = participant.user.last_name
-            # tmp['last_login'] = str(int(datetime.timestamp(participant.user.last_login)))  #if exist
+            try:
+                last_login = int(datetime.timestamp(participant.user.last_login))
+                tmp['last_login'] = last_login
+                time_online = int(time.time()) - last_login
+                if time_online > 180:
+                    tmp["is_online"] = False
+                else:
+                    tmp['is_online'] = True
+            except:
+                tmp['last_login'] = 0
+                tmp['is_online'] = False
             tmp['user_id'] = participant.user.id
+            # tmp['last_seen'] = str(participant.user.last_login)
             tmp["last_message"] = get_last_message(sender_id=user_id,
                                                    recipient_id=tmp["user_id"])
             try:
