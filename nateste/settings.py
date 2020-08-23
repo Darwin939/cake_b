@@ -182,39 +182,20 @@ STATICFILES_DIRS = (
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': True,
-    'formatters': {
-        'standard': {
-            'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
-        },
-    },
+    'disable_existing_loggers': False,
     'handlers': {
-        'default': {
-            'level':'DEBUG',
-            'class':'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_DIR,"log.log"),
-            'maxBytes': 1024*1024*5, # 5 MB
-            'backupCount': 5,
-            'formatter':'standard',
+        'console': {
+            'class': 'logging.StreamHandler',
         },
-        'request_handler': {
-            'level':'DEBUG',
-            'class':'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_DIR,"log.log"),
-            'maxBytes': 1024*1024*5, # 5 MB
-            'backupCount': 5,
-            'formatter':'standard',
-        },
-    },
-    'root': {
-        'handlers': ['default'],
-        'level': 'DEBUG'
     },
     'loggers': {
-        'django.request': {
-            'handlers': ['request_handler'],
-            'level': 'DEBUG',
-            'propagate': False
+        '': {
+            'handlers': ['console'],
+            'level': 'INFO',
         },
-    }
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+    },
 }
