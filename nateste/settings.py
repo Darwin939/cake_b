@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     # serving static React
 
 ]
-APPEND_SLASH=False
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
