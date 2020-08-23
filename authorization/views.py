@@ -4,14 +4,18 @@ from django.http import JsonResponse, HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics
+from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import logout
 from authorization.serializer import UserSerializer
 import json
 
+from main_api.views import CsrfExemptSessionAuthentication
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class UserCreate(generics.CreateAPIView):
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = (AllowAny,)
