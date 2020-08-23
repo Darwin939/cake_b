@@ -129,7 +129,7 @@ def list_chats(data, user_id):
                 last_login = int(datetime.timestamp(participant.user.last_login))
                 tmp['last_login'] = last_login
                 time_online = int(time.time()) - last_login
-                if time_online > 180:
+                if time_online > 60:
                     tmp["is_online"] = False
                 else:
                     tmp['is_online'] = True
