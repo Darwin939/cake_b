@@ -164,7 +164,7 @@ class ChatConsumer(WebsocketConsumer):
         """
 
         self.sender_id = str(self.scope["user"].id)  # self.scope['url_route']['kwargs']['room_name']
-        if self.sender_id == None:  #TODO delete in debug mode
+        if self.sender_id == "None":  #TODO delete in debug mode
             self.sender_id = str(1)
         # self.sender_id = self.scope['url_route']['kwargs']['room_name']
         self.room_group_name = 'chat_%s' % self.sender_id
