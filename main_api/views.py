@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import FileUploadParser, JSONParser
@@ -40,6 +41,12 @@ class UserProfile(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+from django.views.decorators.csrf import ensure_csrf_cookie
+
+
+@ensure_csrf_cookie
+def get_csrf(request):
+    return HttpResponse("s")
 
 class MyProfile(generics.RetrieveUpdateAPIView):
     # queryset = User.objects.get(id=request.user)  # session user / request.user
@@ -47,7 +54,6 @@ class MyProfile(generics.RetrieveUpdateAPIView):
     authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     def get_serializer_class(self):
         return MyProfileSerializer
-
 
     def get(self, request, *args, **kwargs):
         user = User.objects.get(id=request.user.id)  # request.user.id

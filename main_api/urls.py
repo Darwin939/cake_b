@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from .views import OrderList, CreateUser, UserProfile, UserTodos, UserTodo, MyProfile, UserReview
-from .views import Rating, FileUpload,MyOrders
+from .views import Rating, FileUpload,MyOrders , get_csrf
 
 app_name = 'main_api'
 urlpatterns = [
@@ -17,6 +17,7 @@ urlpatterns = [
     path('rating/', Rating.as_view()),
     path('avatar/', csrf_exempt(FileUpload.as_view())),
     path('myorders/',MyOrders.as_view()),
+    path("csrf/",get_csrf)
 
 ]
 
