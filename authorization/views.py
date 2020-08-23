@@ -9,6 +9,7 @@ from django.contrib.auth import logout
 from authorization.serializer import UserSerializer
 import json
 
+
 @method_decorator(csrf_exempt, name='dispatch')
 class UserCreate(generics.CreateAPIView):
     queryset = User.objects.all()

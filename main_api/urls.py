@@ -15,7 +15,7 @@ urlpatterns = [
     path('myprofile/', csrf_exempt(MyProfile.as_view())), #, name = 'myprofile'
     path('review/', UserReview.as_view()),
     path('rating/', Rating.as_view()),
-    path('avatar/', FileUpload.as_view()),
+    path('avatar/', csrf_exempt(FileUpload.as_view())),
     path('myorders/',MyOrders.as_view()),
 
 ]

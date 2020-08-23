@@ -163,6 +163,8 @@ class Rating(APIView):
 class FileUpload(APIView):
     parser_class = (FileUploadParser,)
     permission_classes = [permissions.IsAuthenticated]
+
+    @csrf_exempt
     def post(self, request, *args, **kwargs):
         user = User.objects.get(id=request.user.id)
         avatar = Avatar.objects.filter(user=request.user)
