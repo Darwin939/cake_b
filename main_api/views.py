@@ -60,7 +60,7 @@ class MyProfile(generics.RetrieveUpdateAPIView):
         try:
             url = settings.SITE_URL + user.avatar.file.url
         except:
-            url = None
+            url = settings.SITE_URL + "/media/"+ "avatar+person+profile+user+icon-1320166578424287581.png"
         serializer = MyProfileSerializer(data={'id': user.id, "username": user.username,
                                                'bio': user.profile.bio, 'first_name': user.first_name,
                                                "last_name": user.last_name, 'instagram': user.profile.instagram,
@@ -81,7 +81,10 @@ class MyProfile(generics.RetrieveUpdateAPIView):
         user.profile.location = data['location']
         user.email = data['email']
         user.profile.birth_date = data['birth_date']
-
+        try:
+            ava = user.avatar.file.url
+        except:
+            ava = settings.SITE_URL + "/media/"+ "avatar+person+profile+user+icon-1320166578424287581.png"
         user.save()
 
         serializer = MyProfileSerializer(data={'id': user.id, "username": user.username,
@@ -89,7 +92,7 @@ class MyProfile(generics.RetrieveUpdateAPIView):
                                                "last_name": user.last_name, 'instagram': user.profile.instagram,
                                                'is_active': user.is_active, "location": user.profile.location,
                                                'email': user.email, 'birth_date': user.profile.birth_date,
-                                               'avatar': user.avatar.file.url})
+                                               'avatar': ava})
         serializer.is_valid()
         return Response(serializer.data)
 
@@ -190,8 +193,10 @@ class FileUpload(APIView):
 
     def get(self, request):
         user = User.objects.get(id=request.user.id)
-
-        url = settings.SITE_URL + user.avatar.file.url
+        try:
+            url = settings.SITE_URL + user.avatar.file.url
+        except:
+            url = settings.SITE_URL + "/media/" + "avatar+person+profile+user+icon-1320166578424287581.png"
 
         file_serializer = AvatarSerializer(data={'file': url, 'user': user.id})
         if file_serializer.is_valid():
