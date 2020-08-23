@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from chat.models import Contact, Chat
-from main_api.serializers import UserSerializer
+from cooker_service.serializers import UserSerializer
 
 
 class ContactSerializer(serializers.StringRelatedField):
