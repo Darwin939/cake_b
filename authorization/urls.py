@@ -7,7 +7,7 @@ from .views import login_view,logout_view
 app_name = 'authorization'
 
 urlpatterns = [
-    path('register/', csrf_exempt(views.UserCreate.as_view())),
+    path('register/', csrf_exempt(views.register)),
     path('login/', csrf_exempt(login_view)),
     path('logout/',csrf_exempt(logout_view)),
 ]
