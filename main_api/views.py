@@ -12,6 +12,7 @@ from rest_framework import generics, status, permissions
 from .filters import OrderFilter
 
 
+
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
 class CsrfExemptSessionAuthentication(SessionAuthentication):
@@ -24,6 +25,7 @@ class OrderList(generics.ListCreateAPIView):  # TODO заказы без вор�
     serializer_class = OrderSerializer
     filterset_class = OrderFilter
     permission_classes = [permissions.IsAuthenticated]
+
     def perform_create(self, serializer):
         user = User.objects.get(pk=1)  # TODO in production set to self.request.user
         serializer.save(customer=user)
