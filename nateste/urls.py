@@ -20,6 +20,7 @@ def index(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(('main_api.urls'), namespace="api")),
+    path('customer_api/' , include(('customer_api.urls'))),
     path('chat/',include(('chat.urls'))),
     path('auth/',include('authorization.urls')),
     path('',index , name = "mainpage"),

@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'channels',
     'rest_framework',
     'main_api.apps.MainApiConfig',
+    'customer_api.apps.CustomerApiConfig',
     'chat.apps.ChatConfig',
     'corsheaders',
     'django_filters',
