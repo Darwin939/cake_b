@@ -1,4 +1,4 @@
-from main_api.
+# from main_api.
 
 #for profile retrive , update
 
